@@ -1,14 +1,16 @@
 # SubhuMusic Web
 
-A standalone browser website for SubhuMusic. This lives in the \`website/\` folder so the Android app and the existing Windows desktop player remain separate.
+A standalone browser website for SubhuMusic in the \`website/\` folder. It is separate from the Android app and Windows desktop player.
 
 ## Features
 
-- Responsive dark music-discovery interface for desktop and mobile browsers.
-- Search for public music-catalogue results.
-- Play selected results using YouTube's official embedded player.
-- Save favourites and recent tracks in the current browser.
-- Open a track directly in YouTube Music.
+- Responsive music discovery and public catalogue search.
+- YouTube's official embedded playback with play/pause, previous/next, seek, volume, shuffle, repeat and play queue.
+- Browser-local liked songs and editable playlists.
+- Export playlist metadata as a JSON backup.
+- Import audio files from your device into browser storage (IndexedDB), play them, and export the original file back to your device.
+- Recently played history.
+- Responsive desktop and mobile layouts.
 
 ## Run locally
 
@@ -22,7 +24,7 @@ npm run dev
 
 Open http://localhost:3000.
 
-To create a production build:
+For a production build:
 
 \`\`\`bash
 npm run build
@@ -31,13 +33,20 @@ npm start
 
 ## Deployment
 
-Configure the Vercel project with this repository and set its **Root Directory** to \`website\`. The site does not need a Google API key or any environment variables for the initial version.
+The Vercel project should use this repository with Root Directory set to \`website\`, framework Next.js, and Node.js 22.x.
 
-## Important limitations
+## Storage and account behaviour
 
-- Search uses the community-maintained \`youtubei.js\` library against YouTube Music's undocumented internal catalogue interface. It is not an official YouTube API and can change or be rate-limited.
-- Playback uses YouTube's official embedded player. YouTube controls playback availability, ads, region restrictions, and account requirements.
-- Favourites and recent tracks are stored locally in the browser. They are not synced with the Android app or a Google account.
-- This website does not collect Google passwords or copy the Android app's private cookies.
+- Liked tracks, recent history, playlists and queue state are browser-local. Playlists can be exported as JSON backups.
+- Imported audio file data is stored in the browser's IndexedDB. Clearing site data or using a different browser/device removes or does not transfer those local files.
+- This version does not yet provide account sign-in or cloud sync with the Android app.
+
+## Download policy
+
+The website can export the original audio files a user imported into their own browser. It does not extract or convert YouTube streams into downloadable audio files. YouTube search results play through YouTube's official embedded player; YouTube controls playback availability and download entitlements.
+
+## Catalogue
+
+Search uses the community-maintained \`youtubei.js\` library against YouTube Music's undocumented internal catalogue interface. It is not an official YouTube API and can change or be rate-limited.
 
 SubhuMusic is an independent project and is not affiliated with or endorsed by YouTube or Google.
