@@ -331,7 +331,7 @@ export default function HomePage() {
   useEffect(() => { repeatRef.current = repeat; }, [repeat]);
 
   useEffect(() => {
-    if (!selected || selected.source === "local" || playbackMode !== "video") {
+    if (!selected || selected.source === "local") {
       playerRef.current?.destroy();
       playerRef.current = null;
       return;
@@ -368,7 +368,7 @@ export default function HomePage() {
       playerRef.current?.destroy();
       playerRef.current = null;
     };
-  }, [playbackMode, selected?.source]);
+  }, [selected?.source]);
 
   useEffect(() => {
     if (!selected) return;
@@ -542,12 +542,12 @@ export default function HomePage() {
       return;
     }
     if (mode === "audio") {
-      setError("YouTube catalogue tracks play in the embedded player. Audio-only playback is available for audio files imported from your device.");
-      setPlaybackMode("video");
+      setPlaybackMode("audio");
+      setSuccess("Audio mode selected. This track stays in SubhuMusic's official YouTube player.");
       return;
     }
     setPlaybackMode("video");
-    setSuccess("Switched to embedded video playback.");
+    setSuccess("Switched to video mode in the embedded player.");
   }
   function signInWithGoogle() {
     if (!supabaseClient) {
@@ -845,11 +845,11 @@ export default function HomePage() {
           <span>PLAYBACK MODE</span>
           <div>
             <button className={playbackMode === "video" ? "active" : ""} onClick={() => choosePlaybackMode("video")} disabled={!selected || selected.source === "local"}>Video</button>
-            <button className={playbackMode === "audio" ? "active" : ""} onClick={() => choosePlaybackMode("audio")} disabled={!selected || selected.source !== "local"} title={selected?.source === "youtube" ? "YouTube catalogue tracks play in the embedded player. Audio mode is for imported files." : "Play imported audio files directly in SubhuMusic."}>Audio</button>
+            <button className={playbackMode === "audio" ? "active" : ""} onClick={() => choosePlaybackMode("audio")} disabled={!selected} title={selected?.source === "youtube" ? "Select Audio mode. The official embedded player remains visible." : "Play imported audio files directly in SubhuMusic."}>Audio</button>
           </div>
         </div>
         <div className="player-screen">
-          {selected && selected.source !== "local" && playbackMode === "video" && <div ref={playerHostRef} className="youtube-player-host" />}
+          {selected && selected.source !== "local" && <div ref={playerHostRef} className="youtube-player-host" />}
           {!selected && <div className="player-placeholder"><div className="placeholder-orbit orbit-one" /><div className="placeholder-orbit orbit-two" /><div className="placeholder-note">♫</div><span>YOUR NEXT SOUNDTRACK</span><strong>Choose a track<br />to begin.</strong></div>}
           {selected && selected.source === "local" && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>LOCAL AUDIO</span><strong>{selected.title}</strong><small>Playing directly in SubhuMusic</small></div>}
         </div>
