@@ -464,3 +464,113 @@ a { color: inherit; text-decoration: none; }
   .account-control { align-items:flex-start; max-width:none; width:100%; }
   .account-control small { text-align:left; }
 }
+
+
+/* Audio-mode presentation: artwork is prominent while the official YouTube player remains visible. */
+.player-screen.audio-mode-screen {
+  aspect-ratio: auto;
+  min-height: 0;
+  padding: 22px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(129, 83, 177, .3), transparent 58%),
+    linear-gradient(160deg, #171020, #09080d 78%);
+}
+.audio-mode-artwork {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+.audio-mode-disc {
+  width: 116px;
+  height: 116px;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+  background: conic-gradient(from 30deg, #a77ce0, #342342, #d0a8ff, #342342, #a77ce0);
+  box-shadow: 0 10px 35px rgba(0,0,0,.38), 0 0 28px rgba(173,125,231,.16);
+  animation: audio-disc-turn 18s linear infinite;
+}
+.audio-mode-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 3px solid #171020;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #21172b;
+}
+.audio-mode-artwork>span {
+  color: #bda5db;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+.audio-mode-artwork>strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f3eafa;
+  font: 700 13px "Manrope", sans-serif;
+}
+.audio-mode-artwork>small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #a99ab7;
+  font-size: 10px;
+}
+.audio-mode-equalizer {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 3px;
+}
+.audio-mode-equalizer i {
+  width: 3px;
+  height: 4px;
+  border-radius: 3px;
+  background: #c6a0f4;
+}
+.audio-mode-equalizer.playing i {
+  animation: audio-bars .8s ease-in-out infinite alternate;
+}
+.audio-mode-equalizer.playing i:nth-child(2n) { animation-delay: -.35s; }
+.audio-mode-equalizer.playing i:nth-child(3n) { animation-delay: -.6s; }
+.audio-mode-youtube-host {
+  position: relative;
+  inset: auto;
+  flex: 0 0 200px;
+  width: 200px;
+  height: 200px;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  background: #000;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+.audio-mode-youtube-host iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+@keyframes audio-disc-turn { to { transform: rotate(360deg); } }
+@keyframes audio-bars {
+  from { height: 4px; opacity: .55; }
+  to { height: 15px; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .audio-mode-disc, .audio-mode-equalizer.playing i { animation: none; }
+}
