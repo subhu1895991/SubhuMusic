@@ -186,7 +186,8 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!supabaseClient) {
+    const client = supabaseClient;
+    if (!client) {
       setCloudSyncStatus("unconfigured");
       return;
     }
@@ -254,7 +255,7 @@ export default function HomePage() {
       saveJson("subhumusic:playlists", cloudLibrary.playlists);
       cloudHydratedRef.current = true;
 
-      const { error: writeError } = await supabaseClient.from("subhumusic_libraries").upsert({
+      const { error: writeError } = await client.from("subhumusic_libraries").upsert({
         user_id: user.id,
         favorites: cloudLibrary.favorites.filter((track) => track.source !== "local"),
         recent: cloudLibrary.recent.filter((track) => track.source !== "local"),
@@ -274,7 +275,7 @@ export default function HomePage() {
       }
     };
 
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
       const user = session?.user ?? null;
       setCloudUser(user);
@@ -287,7 +288,7 @@ export default function HomePage() {
       }
     });
 
-    void supabaseClient.auth.getSession().then(({ data }) => {
+    void client.auth.getSession().then(({ data }) => {
       if (active && data.session) {
         setCloudUser(data.session.user);
         void loadCloudLibrary(data.session.user);
@@ -303,10 +304,11 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (!supabaseClient || !cloudUser || !cloudHydratedRef.current) return;
+    const client = supabaseClient;
+    if (!client || !cloudUser || !cloudHydratedRef.current) return;
     const timeout = window.setTimeout(async () => {
       setCloudSyncStatus("syncing");
-      const { error: writeError } = await supabaseClient.from("subhumusic_libraries").upsert({
+      const { error: writeError } = await client.from("subhumusic_libraries").upsert({
         user_id: cloudUser.id,
         favorites: favorites.filter((track) => track.source !== "local"),
         recent: recent.filter((track) => track.source !== "local"),
