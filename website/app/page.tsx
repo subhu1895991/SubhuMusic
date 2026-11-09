@@ -331,15 +331,27 @@ export default function HomePage() {
   useEffect(() => { repeatRef.current = repeat; }, [repeat]);
 
   useEffect(() => {
-    if (!selected || selected.source === "local") {
+    const host = playerHostRef.current;
+    if (!selected || selected.source === "local" || !host) {
       playerRef.current?.destroy();
       playerRef.current = null;
+      if (host) host.replaceChildren();
       return;
     }
+
     let disposed = false;
+    let mount: HTMLDivElement | null = null;
     ensureYouTubeApi().then(() => {
-      if (disposed || !playerHostRef.current || !window.YT?.Player) return;
-      playerRef.current = new window.YT.Player(playerHostRef.current, {
+      const container = playerHostRef.current;
+      if (disposed || !container || !window.YT?.Player) return;
+
+      // YouTube replaces the supplied element with an iframe. Create that element
+      // imperatively so React never tries to reconcile a node YouTube has removed.
+      mount = document.createElement("div");
+      mount.className = "youtube-player-mount";
+      container.replaceChildren(mount);
+
+      playerRef.current = new window.YT.Player(mount, {
         height: "100%", width: "100%", videoId: selected.id,
         playerVars: { autoplay: 0, controls: 1, playsinline: 1, rel: 0 },
         events: {
@@ -362,11 +374,16 @@ export default function HomePage() {
           }
         }
       });
-    }).catch(() => { if (!disposed) setError("The embedded player could not be loaded. Check your connection and refresh."); });
+    }).catch(() => {
+      if (!disposed) setError("The embedded player could not be loaded. Check your connection and refresh.");
+    });
+
     return () => {
       disposed = true;
       playerRef.current?.destroy();
       playerRef.current = null;
+      // Do not leave an iframe behind when changing to a local track.
+      if (playerHostRef.current) playerHostRef.current.replaceChildren();
     };
   }, [selected?.source]);
 
