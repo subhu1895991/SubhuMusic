@@ -481,6 +481,7 @@ a { color: inherit; text-decoration: none; }
     linear-gradient(160deg, #171020, #09080d 78%);
 }
 .audio-mode-artwork {
+  order: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -547,24 +548,27 @@ a { color: inherit; text-decoration: none; }
 }
 .audio-mode-equalizer.playing i:nth-child(2n) { animation-delay: -.35s; }
 .audio-mode-equalizer.playing i:nth-child(3n) { animation-delay: -.6s; }
-.audio-mode-youtube-host {
-  position: relative;
-  inset: auto;
-  flex: 0 0 200px;
-  width: 200px;
-  height: 200px;
+/* The IFrame API replaces its host div with an iframe. Keep the host stable in
+   React and size the resulting iframe directly while in Audio presentation. */
+.player-screen.audio-mode-screen .youtube-player-host,
+.player-screen.audio-mode-screen > iframe {
+  position: relative !important;
+  inset: auto !important;
+  order: 2;
+  flex: 0 0 202px;
+  display: block;
+  width: 202px !important;
+  height: 202px !important;
+  min-width: 200px;
+  min-height: 200px;
   max-width: 100%;
+  margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 10px;
   background: #000;
   box-shadow: 0 8px 24px rgba(0,0,0,.35);
-}
-.audio-mode-youtube-host iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  box-sizing: border-box;
 }
 @keyframes audio-disc-turn { to { transform: rotate(360deg); } }
 @keyframes audio-bars {
