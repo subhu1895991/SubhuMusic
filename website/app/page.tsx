@@ -530,15 +530,6 @@ export default function HomePage() {
     }
     goNext();
   };
-  function openYouTubeMusicAudio(track: Track) {
-    const link = document.createElement("a");
-    link.href = "https://music.youtube.com/watch?v=" + encodeURIComponent(track.id);
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
   function choosePlaybackMode(mode: PlaybackMode) {
     const track = selectedRef.current;
     if (!track) return;
@@ -551,15 +542,12 @@ export default function HomePage() {
       return;
     }
     if (mode === "audio") {
-      playerRef.current?.pauseVideo();
-      setIsPlaying(false);
-      setPlaybackMode("audio");
-      openYouTubeMusicAudio(track);
-      setSuccess("Opened this track in YouTube Music for audio playback.");
-    } else {
+      setError("YouTube catalogue tracks play in the embedded player. Audio-only playback is available for audio files imported from your device.");
       setPlaybackMode("video");
-      setSuccess("Switched to embedded video playback.");
+      return;
     }
+    setPlaybackMode("video");
+    setSuccess("Switched to embedded video playback.");
   }
   function signInWithGoogle() {
     if (!supabaseClient) {
@@ -586,8 +574,6 @@ export default function HomePage() {
       if (!audio) return;
       if (audio.paused) void audio.play().then(() => setIsPlaying(true)).catch(() => setError("Could not resume this audio file."));
       else audio.pause();
-    } else if (playbackMode === "audio") {
-      openYouTubeMusicAudio(selectedRef.current);
     } else if (isPlaying) playerRef.current?.pauseVideo();
     else playerRef.current?.playVideo();
   }
@@ -859,13 +845,13 @@ export default function HomePage() {
           <span>PLAYBACK MODE</span>
           <div>
             <button className={playbackMode === "video" ? "active" : ""} onClick={() => choosePlaybackMode("video")} disabled={!selected || selected.source === "local"}>Video</button>
-            <button className={playbackMode === "audio" ? "active" : ""} onClick={() => choosePlaybackMode("audio")} disabled={!selected}>Audio</button>
+            <button className={playbackMode === "audio" ? "active" : ""} onClick={() => choosePlaybackMode("audio")} disabled={!selected || selected.source !== "local"} title={selected?.source === "youtube" ? "YouTube catalogue tracks play in the embedded player. Audio mode is for imported files." : "Play imported audio files directly in SubhuMusic."}>Audio</button>
           </div>
         </div>
         <div className="player-screen">
           {selected && selected.source !== "local" && playbackMode === "video" && <div ref={playerHostRef} className="youtube-player-host" />}
           {!selected && <div className="player-placeholder"><div className="placeholder-orbit orbit-one" /><div className="placeholder-orbit orbit-two" /><div className="placeholder-note">♫</div><span>YOUR NEXT SOUNDTRACK</span><strong>Choose a track<br />to begin.</strong></div>}
-          {selected && (selected.source === "local" || playbackMode === "audio") && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>{selected.source === "local" ? "LOCAL AUDIO" : "YOUTUBE MUSIC AUDIO"}</span><strong>{selected.title}</strong><small>{selected.source === "local" ? "Playing directly in SubhuMusic" : "Audio playback opens in YouTube Music"}</small>{selected.source !== "local" && <a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open in YouTube Music ↗</a>}</div>}
+          {selected && selected.source === "local" && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>LOCAL AUDIO</span><strong>{selected.title}</strong><small>Playing directly in SubhuMusic</small></div>}
         </div>
         <audio ref={audioRef} hidden onEnded={() => endedHandlerRef.current()} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onLoadedMetadata={(e) => setDurationSeconds(e.currentTarget.duration || 0)} />
         <div className="now-playing-info"><span className="eyebrow">ON YOUR DECK</span>
@@ -875,7 +861,7 @@ export default function HomePage() {
             {selected.source === "local" ? <button className="player-heart" onClick={() => void downloadLocalTrack(selected)}>↓ Download</button> : <a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open in YouTube Music ↗</a>}
           </div></> : <><h2>A little silence?</h2><p>Search for a song and start listening.</p><button className="player-search-link" onClick={() => document.getElementById("music-search")?.focus()}>Search music ↗</button></>}
         </div>
-        {selected?.source === "youtube" && playbackMode === "audio" ? <div className="audio-redirect-panel"><strong>Audio mode is open in YouTube Music.</strong><p>YouTube Music controls the audio session. Switch back to Video here to use SubhuMusic’s embedded player.</p><a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open audio player again ↗</a></div> : <div className="player-controls-panel">
+        <div className="player-controls-panel">
           <div className="player-control-buttons">
             <button className={shuffle ? "mode-control active" : "mode-control"} onClick={toggleShuffle} title="Shuffle">⤨</button>
             <button onClick={goPrevious} title="Previous track">|◀</button>
@@ -885,7 +871,7 @@ export default function HomePage() {
           </div>
           <div className="progress-row"><span>{formatTime(currentTime)}</span><input type="range" min="0" max="1000" value={durationSeconds ? Math.min(1000, currentTime / durationSeconds * 1000) : 0} onChange={(e) => seekTo(Number(e.target.value))} aria-label="Seek track" /><span>{formatTime(durationSeconds)}</span></div>
           <div className="volume-row"><span>VOLUME</span><input type="range" min="0" max="100" value={volume} onChange={(e) => changeVolume(Number(e.target.value))} aria-label="Volume" /></div>
-        </div>}
+        </div>
         <div className="queue-head"><div><span className="eyebrow">UP NEXT</span><strong>{queue.length} tracks</strong></div><button className="text-button" onClick={() => setShowQueue((v) => !v)}>{showQueue ? "Hide queue" : "View queue"}</button></div>
         {showQueue && <div className="queue-panel">
           {queue.length ? queue.map((track, index) => <div className="queue-item" key={track.id + "-" + index}>
