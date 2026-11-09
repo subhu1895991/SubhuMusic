@@ -1,7 +1,8 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { createClient, type User } from "@supabase/supabase-js";
+import { type User } from "@supabase/supabase-js";
+import { supabase as supabaseClient } from "../lib/supabase";
 
 type Track = {
   id: string; title: string; artist: string; duration: string; thumbnail: string;
@@ -38,11 +39,6 @@ const QUICK_SEARCHES = ["Bengali hits", "Arijit Singh", "Rabindra Sangeet", "Lof
 const AUDIO_ACCEPT = "audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.flac,.webm";
 const DB_NAME = "subhumusic-library";
 const DB_STORE = "audio-files";
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-const supabaseClient = supabaseUrl && supabasePublishableKey
-  ? createClient(supabaseUrl, supabasePublishableKey)
-  : null;
 
 function readJson<T>(key: string, fallback: T): T {
   try { const value = localStorage.getItem(key); return value ? JSON.parse(value) as T : fallback; }
@@ -243,7 +239,7 @@ export default function HomePage() {
         });
         cloudLibrary = {
           favorites: mergeTracks(localFavorites, cloudFavorites).slice(0, 250),
-          recent: mergeTracks(localRecent, cloudRecent).slice(-30).reverse(),
+          recent: mergeTracks(cloudRecent, localRecent).slice(0, 30),
           playlists: [...playlistMap.values()]
         };
       } else {
