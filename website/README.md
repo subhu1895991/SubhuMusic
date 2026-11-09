@@ -1,52 +1,53 @@
 # SubhuMusic Web
 
-A standalone browser website for SubhuMusic in the \`website/\` folder. It is separate from the Android app and Windows desktop player.
+A standalone browser website for SubhuMusic in the `website/` folder. It is separate from the Android app and Windows desktop player.
 
 ## Features
 
-- Responsive music discovery and public catalogue search.
-- YouTube's official embedded playback with play/pause, previous/next, seek, volume, shuffle, repeat and play queue.
-- Browser-local liked songs and editable playlists.
-- Export playlist metadata as a JSON backup.
-- Import audio files from your device into browser storage (IndexedDB), play them, and export the original file back to your device.
-- Recently played history.
-- Responsive desktop and mobile layouts.
+- Search public music catalogue.
+- Video mode with YouTube's official embedded player.
+- Audio mode opens the matching track in YouTube Music; imported local audio plays directly in SubhuMusic.
+- Browser-local liked songs, recently played history, editable playlists, shuffle, repeat and play queue.
+- Import local audio into browser storage and export the original file back to your device.
+- Optional Google sign-in and cloud sync for liked tracks, playlists and recently played history through Supabase.
 
 ## Run locally
 
 Requires Node.js 20.9 or newer.
 
-\`\`\`bash
+```bash
 cd website
 npm install
 npm run dev
-\`\`\`
+```
 
 Open http://localhost:3000.
 
-For a production build:
+## Supabase cloud sync setup
 
-\`\`\`bash
-npm run build
-npm start
-\`\`\`
+1. Create or select a dedicated Supabase project for SubhuMusic.
+2. Run the SQL in `supabase/migrations/20261109_create_subhumusic_libraries.sql` in that project's SQL Editor.
+3. Add these Vercel environment variables for the `subhumusic-web` project (Production, Preview and Development):
+   - `NEXT_PUBLIC_SUPABASE_URL` — the project's API URL.
+   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — the project's publishable key (not a service-role key).
+4. In Supabase Auth, enable the Google provider. Create a **Web application OAuth client** in Google Cloud, add your website URL to authorised JavaScript origins, and add the Supabase Auth callback URL to authorised redirect URIs. Add the client ID and secret to Supabase's Google provider settings.
+5. In Supabase Auth URL Configuration, set the Site URL to your website and allow the website origin as a redirect URL.
+6. Redeploy the Vercel project.
 
-## Deployment
+Google OAuth cannot be activated with source code alone; it needs a Google OAuth client ID and client secret configured in Supabase. Never store the Google client secret or Supabase service-role key in the browser or in Git.
 
-The Vercel project should use this repository with Root Directory set to \`website\`, framework Next.js, and Node.js 22.x.
+### What syncs
 
-## Storage and account behaviour
+Liked YouTube tracks, playlists and recently played entries sync per authenticated Supabase user. Imported audio file bytes stay in the current browser's IndexedDB and do not upload to the cloud. The queue and playback position are session-local.
 
-- Liked tracks, recent history and playlists are saved in this browser. The live queue lasts for the current page session. Playlists can be exported as JSON backups.
-- Imported audio file data is stored in the browser's IndexedDB. Clearing site data or using a different browser/device removes or does not transfer those local files.
-- This version does not yet provide account sign-in or cloud sync with the Android app.
+Each account's row is protected by Row Level Security and can only be selected or changed by that signed-in user.
 
-## Download policy
+## YouTube playback note
 
-The website can export the original audio files a user imported into their own browser. It does not extract or convert YouTube streams into downloadable audio files. YouTube search results play through YouTube's official embedded player; YouTube controls playback availability and download entitlements.
+Video mode uses the official YouTube embedded player. Audio mode sends the same track to YouTube Music rather than extracting or separating the YouTube video soundtrack. YouTube controls stream availability, account requirements and ads. The website does not provide YouTube MP3 extraction or downloads.
 
 ## Catalogue
 
-Search uses the community-maintained \`youtubei.js\` library against YouTube Music's undocumented internal catalogue interface. It is not an official YouTube API and can change or be rate-limited.
+Search uses the community-maintained `youtubei.js` library against YouTube Music's undocumented internal catalogue interface. It is not an official YouTube API and can change or be rate-limited.
 
 SubhuMusic is an independent project and is not affiliated with or endorsed by YouTube or Google.

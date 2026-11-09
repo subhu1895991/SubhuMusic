@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { createClient, type User } from "@supabase/supabase-js";
 
 type Track = {
   id: string; title: string; artist: string; duration: string; thumbnail: string;
@@ -9,6 +10,9 @@ type Track = {
 type Playlist = { id: string; name: string; tracks: Track[]; createdAt: number };
 type View = "home" | "search" | "library" | "playlists" | "playlist" | "downloads";
 type RepeatMode = "off" | "all" | "one";
+type PlaybackMode = "video" | "audio";
+
+type CloudLibrary = { favorites: Track[]; playlists: Playlist[]; recent: Track[] };
 type YouTubePlayer = {
   loadVideoById: (id: string) => void; playVideo: () => void; pauseVideo: () => void;
   stopVideo: () => void; seekTo: (seconds: number, allowSeekAhead: boolean) => void;
@@ -34,6 +38,11 @@ const QUICK_SEARCHES = ["Bengali hits", "Arijit Singh", "Rabindra Sangeet", "Lof
 const AUDIO_ACCEPT = "audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus,.flac,.webm";
 const DB_NAME = "subhumusic-library";
 const DB_STORE = "audio-files";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const supabaseClient = supabaseUrl && supabasePublishableKey
+  ? createClient(supabaseUrl, supabasePublishableKey)
+  : null;
 
 function readJson<T>(key: string, fallback: T): T {
   try { const value = localStorage.getItem(key); return value ? JSON.parse(value) as T : fallback; }
@@ -139,6 +148,9 @@ export default function HomePage() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Track | null>(null);
+  const [playbackMode, setPlaybackMode] = useState<PlaybackMode>("video");
+  const [cloudUser, setCloudUser] = useState<User | null>(null);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<"unconfigured" | "signed-out" | "syncing" | "synced" | "error">("unconfigured");
   const [queue, setQueue] = useState<Track[]>([]);
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState<RepeatMode>("off");
@@ -166,6 +178,7 @@ export default function HomePage() {
   const historyRef = useRef<Track[]>([]);
   const endedHandlerRef = useRef<() => void>(() => undefined);
   const localObjectUrlRef = useRef<string | null>(null);
+  const cloudHydratedRef = useRef(false);
 
   useEffect(() => {
     setFavorites(normalizeTracks(readJson("subhumusic:favorites", [])));
@@ -175,16 +188,162 @@ export default function HomePage() {
     setPlaylists(Array.isArray(saved) ? saved.filter((p) => p && typeof p.id === "string" && typeof p.name === "string")
       .map((p) => ({ ...p, tracks: normalizeTracks(p.tracks) })) : []);
   }, []);
+
+  useEffect(() => {
+    if (!supabaseClient) {
+      setCloudSyncStatus("unconfigured");
+      return;
+    }
+
+    let active = true;
+    const loadedUserIds = new Set<string>();
+    const loadCloudLibrary = async (user: User) => {
+      if (loadedUserIds.has(user.id)) return;
+      loadedUserIds.add(user.id);
+      setCloudSyncStatus("syncing");
+
+      const { data, error: readError } = await supabaseClient
+        .from("subhumusic_libraries")
+        .select("favorites, playlists, recent")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!active) return;
+      if (readError) {
+        loadedUserIds.delete(user.id);
+        setCloudSyncStatus("error");
+        setError("Cloud library could not be loaded: " + readError.message);
+        return;
+      }
+
+      const mergeTracks = (left: Track[], right: Track[]) => {
+        const map = new Map<string, Track>();
+        [...left, ...right].forEach((track) => map.set(track.id, track));
+        return [...map.values()];
+      };
+
+      const localFavorites = normalizeTracks(readJson("subhumusic:favorites", []));
+      const localRecent = normalizeTracks(readJson("subhumusic:recent", []));
+      const localPlaylistsRaw = readJson<Playlist[]>("subhumusic:playlists", []);
+      const localPlaylists = Array.isArray(localPlaylistsRaw) ? localPlaylistsRaw : [];
+      let cloudLibrary: CloudLibrary;
+
+      if (data) {
+        const cloudFavorites = normalizeTracks(data.favorites);
+        const cloudRecent = normalizeTracks(data.recent);
+        const cloudPlaylists = Array.isArray(data.playlists) ? data.playlists as Playlist[] : [];
+        const playlistMap = new Map<string, Playlist>();
+        localPlaylists.forEach((playlist) => playlistMap.set(playlist.id, { ...playlist, tracks: normalizeTracks(playlist.tracks) }));
+        cloudPlaylists.forEach((playlist) => {
+          const existing = playlistMap.get(playlist.id);
+          playlistMap.set(playlist.id, {
+            ...playlist,
+            tracks: mergeTracks(existing?.tracks ?? [], normalizeTracks(playlist.tracks))
+          });
+        });
+        cloudLibrary = {
+          favorites: mergeTracks(localFavorites, cloudFavorites).slice(0, 250),
+          recent: mergeTracks(localRecent, cloudRecent).slice(-30).reverse(),
+          playlists: [...playlistMap.values()]
+        };
+      } else {
+        cloudLibrary = { favorites: localFavorites, recent: localRecent, playlists: localPlaylists };
+      }
+
+      setFavorites(cloudLibrary.favorites);
+      setRecent(cloudLibrary.recent);
+      setPlaylists(cloudLibrary.playlists);
+      saveJson("subhumusic:favorites", cloudLibrary.favorites);
+      saveJson("subhumusic:recent", cloudLibrary.recent);
+      saveJson("subhumusic:playlists", cloudLibrary.playlists);
+      cloudHydratedRef.current = true;
+
+      const { error: writeError } = await supabaseClient.from("subhumusic_libraries").upsert({
+        user_id: user.id,
+        favorites: cloudLibrary.favorites.filter((track) => track.source !== "local"),
+        recent: cloudLibrary.recent.filter((track) => track.source !== "local"),
+        playlists: cloudLibrary.playlists.map((playlist) => ({
+          ...playlist,
+          tracks: normalizeTracks(playlist.tracks).filter((track) => track.source !== "local")
+        })),
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
+
+      if (!active) return;
+      if (writeError) {
+        setCloudSyncStatus("error");
+        setError("Cloud library could not be saved: " + writeError.message);
+      } else {
+        setCloudSyncStatus("synced");
+      }
+    };
+
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      const user = session?.user ?? null;
+      setCloudUser(user);
+      if (user) {
+        window.setTimeout(() => { if (active) void loadCloudLibrary(user); }, 0);
+      } else {
+        loadedUserIds.clear();
+        cloudHydratedRef.current = false;
+        setCloudSyncStatus("signed-out");
+      }
+    });
+
+    void supabaseClient.auth.getSession().then(({ data }) => {
+      if (active && data.session) {
+        setCloudUser(data.session.user);
+        void loadCloudLibrary(data.session.user);
+      } else if (active) {
+        setCloudSyncStatus("signed-out");
+      }
+    });
+
+    return () => {
+      active = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!supabaseClient || !cloudUser || !cloudHydratedRef.current) return;
+    const timeout = window.setTimeout(async () => {
+      setCloudSyncStatus("syncing");
+      const { error: writeError } = await supabaseClient.from("subhumusic_libraries").upsert({
+        user_id: cloudUser.id,
+        favorites: favorites.filter((track) => track.source !== "local"),
+        recent: recent.filter((track) => track.source !== "local"),
+        playlists: playlists.map((playlist) => ({
+          ...playlist,
+          tracks: playlist.tracks.filter((track) => track.source !== "local")
+        })),
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
+      if (writeError) {
+        setCloudSyncStatus("error");
+        setError("Cloud sync failed: " + writeError.message);
+      } else {
+        setCloudSyncStatus("synced");
+      }
+    }, 700);
+    return () => window.clearTimeout(timeout);
+  }, [favorites, playlists, recent, cloudUser?.id]);
   useEffect(() => { queueRef.current = queue; }, [queue]);
   useEffect(() => { repeatRef.current = repeat; }, [repeat]);
 
   useEffect(() => {
+    if (!selected || selected.source === "local" || playbackMode !== "video") {
+      playerRef.current?.destroy();
+      playerRef.current = null;
+      return;
+    }
     let disposed = false;
     ensureYouTubeApi().then(() => {
       if (disposed || !playerHostRef.current || !window.YT?.Player) return;
       playerRef.current = new window.YT.Player(playerHostRef.current, {
-        height: "100%", width: "100%", videoId: "",
-        playerVars: { autoplay: 0, controls: 1, playsinline: 1, rel: 0, modestbranding: 1 },
+        height: "100%", width: "100%", videoId: selected.id,
+        playerVars: { autoplay: 0, controls: 1, playsinline: 1, rel: 0 },
         events: {
           onReady: (event) => {
             event.target.setVolume(volume);
@@ -211,7 +370,7 @@ export default function HomePage() {
       playerRef.current?.destroy();
       playerRef.current = null;
     };
-  }, []);
+  }, [playbackMode, selected?.source]);
 
   useEffect(() => {
     if (!selected) return;
@@ -303,6 +462,7 @@ export default function HomePage() {
       return next;
     });
     setSelected({ ...track });
+    setPlaybackMode(track.source === "local" ? "audio" : "video");
     setError("");
     setActiveMenuTrack(null);
   }
@@ -372,6 +532,55 @@ export default function HomePage() {
     }
     goNext();
   };
+  function openYouTubeMusicAudio(track: Track) {
+    const link = document.createElement("a");
+    link.href = "https://music.youtube.com/watch?v=" + encodeURIComponent(track.id);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+  function choosePlaybackMode(mode: PlaybackMode) {
+    const track = selectedRef.current;
+    if (!track) return;
+    if (track.source === "local") {
+      if (mode === "video") {
+        setError("This imported file contains audio only, so Video mode is unavailable.");
+        return;
+      }
+      setPlaybackMode("audio");
+      return;
+    }
+    if (mode === "audio") {
+      playerRef.current?.pauseVideo();
+      setIsPlaying(false);
+      setPlaybackMode("audio");
+      openYouTubeMusicAudio(track);
+      setSuccess("Opened this track in YouTube Music for audio playback.");
+    } else {
+      setPlaybackMode("video");
+      setSuccess("Switched to embedded video playback.");
+    }
+  }
+  function signInWithGoogle() {
+    if (!supabaseClient) {
+      setError("Cloud sync is not configured yet. Add the Supabase URL and publishable key to the website environment variables.");
+      return;
+    }
+    void supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin }
+    }).then(({ error: authError }) => {
+      if (authError) setError("Google sign-in failed: " + authError.message);
+    });
+  }
+  async function signOutCloud() {
+    if (!supabaseClient) return;
+    const { error: authError } = await supabaseClient.auth.signOut();
+    if (authError) setError("Could not sign out: " + authError.message);
+    else setCloudSyncStatus("signed-out");
+  }
   function togglePlay() {
     if (!selectedRef.current) { setError("Choose a track first."); return; }
     if (selectedRef.current.source === "local") {
@@ -379,6 +588,8 @@ export default function HomePage() {
       if (!audio) return;
       if (audio.paused) void audio.play().then(() => setIsPlaying(true)).catch(() => setError("Could not resume this audio file."));
       else audio.pause();
+    } else if (playbackMode === "audio") {
+      openYouTubeMusicAudio(selectedRef.current);
     } else if (isPlaying) playerRef.current?.pauseVideo();
     else playerRef.current?.playVideo();
   }
@@ -587,6 +798,10 @@ export default function HomePage() {
         <header className="topbar">
           <div className="topbar-copy"><span className="eyebrow">YOUR SOUND. YOUR SPACE.</span><h1>{view === "home" ? "Good music, good mood." : view === "search" ? "Find your next favourite." : view === "downloads" ? "Your music, on this device." : view === "playlists" || view === "playlist" ? "Make a soundtrack of your own." : "Your personal collection."}</h1></div>
           <form className="search-form" onSubmit={submitSearch}><span className="search-symbol">⌕</span><input id="music-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search songs, artists..." aria-label="Search songs and artists" /><button type="submit" disabled={loading}>{loading ? "..." : "Search"}</button></form>
+          <div className="account-control">
+            {cloudUser ? <><span className="account-user">{cloudUser.email || "Google account"}</span><button onClick={() => void signOutCloud()}>Sign out</button></> : <button onClick={signInWithGoogle} disabled={!supabaseClient}>Continue with Google</button>}
+            <small>{cloudSyncStatus === "unconfigured" ? "Cloud sync setup needed" : cloudSyncStatus === "signed-out" ? "Not signed in" : cloudSyncStatus === "syncing" ? "Syncing your library…" : cloudSyncStatus === "synced" ? "Library synced" : "Sync needs attention"}</small>
+          </div>
         </header>
 
         {view === "home" && <>
@@ -642,10 +857,17 @@ export default function HomePage() {
 
       <aside className="player-column">
         <div className="player-topline"><span className="live-dot" /> NOW PLAYING <span className="player-topline-tag">WEB PLAYER</span></div>
+        <div className="playback-mode-switch">
+          <span>PLAYBACK MODE</span>
+          <div>
+            <button className={playbackMode === "video" ? "active" : ""} onClick={() => choosePlaybackMode("video")} disabled={!selected || selected.source === "local"}>Video</button>
+            <button className={playbackMode === "audio" ? "active" : ""} onClick={() => choosePlaybackMode("audio")} disabled={!selected}>Audio</button>
+          </div>
+        </div>
         <div className="player-screen">
-          <div ref={playerHostRef} className="youtube-player-host" />
+          {selected && selected.source !== "local" && playbackMode === "video" && <div ref={playerHostRef} className="youtube-player-host" />}
           {!selected && <div className="player-placeholder"><div className="placeholder-orbit orbit-one" /><div className="placeholder-orbit orbit-two" /><div className="placeholder-note">♫</div><span>YOUR NEXT SOUNDTRACK</span><strong>Choose a track<br />to begin.</strong></div>}
-          {selected?.source === "local" && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>LOCAL AUDIO</span><strong>{selected.title}</strong><small>Playing from this browser</small></div>}
+          {selected && (selected.source === "local" || playbackMode === "audio") && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>{selected.source === "local" ? "LOCAL AUDIO" : "YOUTUBE MUSIC AUDIO"}</span><strong>{selected.title}</strong><small>{selected.source === "local" ? "Playing directly in SubhuMusic" : "Audio playback opens in YouTube Music"}</small>{selected.source !== "local" && <a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open in YouTube Music ↗</a>}</div>}
         </div>
         <audio ref={audioRef} hidden onEnded={() => endedHandlerRef.current()} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onLoadedMetadata={(e) => setDurationSeconds(e.currentTarget.duration || 0)} />
         <div className="now-playing-info"><span className="eyebrow">ON YOUR DECK</span>
@@ -655,7 +877,7 @@ export default function HomePage() {
             {selected.source === "local" ? <button className="player-heart" onClick={() => void downloadLocalTrack(selected)}>↓ Download</button> : <a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open in YouTube Music ↗</a>}
           </div></> : <><h2>A little silence?</h2><p>Search for a song and start listening.</p><button className="player-search-link" onClick={() => document.getElementById("music-search")?.focus()}>Search music ↗</button></>}
         </div>
-        <div className="player-controls-panel">
+        {selected?.source === "youtube" && playbackMode === "audio" ? <div className="audio-redirect-panel"><strong>Audio mode is open in YouTube Music.</strong><p>YouTube Music controls the audio session. Switch back to Video here to use SubhuMusic’s embedded player.</p><a href={"https://music.youtube.com/watch?v=" + encodeURIComponent(selected.id)} target="_blank" rel="noreferrer">Open audio player again ↗</a></div> : <div className="player-controls-panel">
           <div className="player-control-buttons">
             <button className={shuffle ? "mode-control active" : "mode-control"} onClick={toggleShuffle} title="Shuffle">⤨</button>
             <button onClick={goPrevious} title="Previous track">|◀</button>
@@ -665,7 +887,7 @@ export default function HomePage() {
           </div>
           <div className="progress-row"><span>{formatTime(currentTime)}</span><input type="range" min="0" max="1000" value={durationSeconds ? Math.min(1000, currentTime / durationSeconds * 1000) : 0} onChange={(e) => seekTo(Number(e.target.value))} aria-label="Seek track" /><span>{formatTime(durationSeconds)}</span></div>
           <div className="volume-row"><span>VOLUME</span><input type="range" min="0" max="100" value={volume} onChange={(e) => changeVolume(Number(e.target.value))} aria-label="Volume" /></div>
-        </div>
+        </div>}
         <div className="queue-head"><div><span className="eyebrow">UP NEXT</span><strong>{queue.length} tracks</strong></div><button className="text-button" onClick={() => setShowQueue((v) => !v)}>{showQueue ? "Hide queue" : "View queue"}</button></div>
         {showQueue && <div className="queue-panel">
           {queue.length ? queue.map((track, index) => <div className="queue-item" key={track.id + "-" + index}>

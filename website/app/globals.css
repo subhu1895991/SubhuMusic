@@ -440,3 +440,27 @@ a { color: inherit; text-decoration: none; }
   .playlist-header-actions>* { flex:1 1 auto; }
   .dock-queue button { padding:7px; }
 }
+
+
+/* Mode selection and Google account sync */
+.playback-mode-switch { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:16px; }
+.playback-mode-switch>span { color:#948ba1; font-size:8px; font-weight:700; letter-spacing:1.35px; }
+.playback-mode-switch>div { display:flex; gap:4px; padding:3px; border:1px solid rgba(255,255,255,.08); border-radius:9px; background:rgba(255,255,255,.035); }
+.playback-mode-switch button { min-width:65px; padding:7px 11px; border:0; border-radius:6px; background:transparent; color:#978ea4; font-size:9px; }
+.playback-mode-switch button.active { background:rgba(167,139,250,.2); color:#e6d8ff; box-shadow:inset 0 0 0 1px rgba(167,139,250,.15); }
+.playback-mode-switch button:disabled { opacity:.35; cursor:not-allowed; }
+.player-screen { min-height:200px; }
+.local-player-cover a { color:#d1baff; font-size:9px; margin-top:4px; text-decoration:underline; text-underline-offset:3px; }
+.audio-redirect-panel { padding:16px 4px; border-bottom:1px solid var(--line); }
+.audio-redirect-panel strong { display:block; font-size:11px; color:#e5d9f3; }
+.audio-redirect-panel p { color:#948b9e; font-size:9px; line-height:1.6; margin:7px 0 11px; }
+.audio-redirect-panel a { color:#c5aaff; font-size:10px; }
+.account-control { min-width:150px; max-width:220px; display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+.account-control button { border:1px solid rgba(167,139,250,.25); border-radius:9px; background:rgba(167,139,250,.1); color:#e3d7ff; padding:9px 12px; font-size:10px; white-space:nowrap; }
+.account-control button:disabled { opacity:.45; cursor:not-allowed; }
+.account-control small { color:#90889c; font-size:8px; text-align:right; }
+.account-user { max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#c7bdd5; font-size:9px; }
+@media (max-width:720px) {
+  .account-control { align-items:flex-start; max-width:none; width:100%; }
+  .account-control small { text-align:left; }
+}
