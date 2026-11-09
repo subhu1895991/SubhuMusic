@@ -6,7 +6,7 @@ A standalone browser website for SubhuMusic in the `website/` folder. It is sepa
 
 - Search public music catalogue.
 - Video mode with YouTube's official embedded player.
-- Audio mode opens the matching track in YouTube Music; imported local audio plays directly in SubhuMusic.
+- YouTube catalogue tracks play in the official embedded player; imported local audio plays directly in SubhuMusic.
 - Browser-local liked songs, recently played history, editable playlists, shuffle, repeat and play queue.
 - Import local audio into browser storage and export the original file back to your device.
 - Optional Google sign-in and cloud sync for liked tracks, playlists and recently played history through Supabase.
@@ -44,7 +44,7 @@ Each account's row is protected by Row Level Security and can only be selected o
 
 ## YouTube playback note
 
-Video mode uses the official YouTube embedded player. Audio mode sends the same track to YouTube Music rather than extracting or separating the YouTube video soundtrack. YouTube controls stream availability, account requirements and ads. The website does not provide YouTube MP3 extraction or downloads.
+Video mode uses the official YouTube embedded player for catalogue tracks. The Audio control is reserved for imported local audio files; YouTube catalogue tracks stay in the embedded player rather than being redirected to another page. The separate Open in YouTube Music link remains available when you choose to use YouTube Music. YouTube controls stream availability, account requirements and ads. The website does not provide YouTube MP3 extraction or downloads.
 
 ## Catalogue
 
