@@ -849,8 +849,8 @@ export default function HomePage() {
           </div>
         </div>
         <div className={selected?.source !== "local" && playbackMode === "audio" ? "player-screen audio-mode-screen" : "player-screen"}>
+          {selected && selected.source !== "local" && <div key="youtube-player-host" ref={playerHostRef} className="youtube-player-host" />}
           {selected && selected.source !== "local" && playbackMode === "audio" && <div key="audio-mode-artwork" className="audio-mode-artwork"><div className="audio-mode-disc"><TrackArtwork track={selected} className="audio-mode-art" /></div><span>NOW PLAYING · AUDIO MODE</span><strong>{selected.title}</strong><small>{selected.artist}</small><div className={isPlaying ? "audio-mode-equalizer playing" : "audio-mode-equalizer"}><i /><i /><i /><i /><i /><i /><i /><i /><i /></div></div>}
-          {selected && selected.source !== "local" && <div key="youtube-player-host" ref={playerHostRef} className={playbackMode === "audio" ? "youtube-player-host audio-mode-youtube-host" : "youtube-player-host"} />}
           {!selected && <div className="player-placeholder"><div className="placeholder-orbit orbit-one" /><div className="placeholder-orbit orbit-two" /><div className="placeholder-note">♫</div><span>YOUR NEXT SOUNDTRACK</span><strong>Choose a track<br />to begin.</strong></div>}
           {selected && selected.source === "local" && <div className="local-player-cover"><TrackArtwork track={selected} className="local-player-art" /><span>LOCAL AUDIO</span><strong>{selected.title}</strong><small>Playing directly in SubhuMusic</small></div>}
         </div>
