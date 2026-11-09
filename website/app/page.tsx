@@ -297,6 +297,11 @@ export default function HomePage() {
     const previous = selectedRef.current;
     if (rememberPrevious && previous && previous.id !== track.id) historyRef.current = [...historyRef.current.slice(-39), previous];
     selectedRef.current = track;
+    setRecent((current) => {
+      const next = [track, ...current.filter((item) => item.id !== track.id)].slice(0, 30);
+      saveJson("subhumusic:recent", next);
+      return next;
+    });
     setSelected({ ...track });
     setError("");
     setActiveMenuTrack(null);

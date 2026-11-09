@@ -37,7 +37,7 @@ The Vercel project should use this repository with Root Directory set to \`websi
 
 ## Storage and account behaviour
 
-- Liked tracks, recent history, playlists and queue state are browser-local. Playlists can be exported as JSON backups.
+- Liked tracks, recent history and playlists are saved in this browser. The live queue lasts for the current page session. Playlists can be exported as JSON backups.
 - Imported audio file data is stored in the browser's IndexedDB. Clearing site data or using a different browser/device removes or does not transfer those local files.
 - This version does not yet provide account sign-in or cloud sync with the Android app.
 
