@@ -199,7 +199,7 @@ export default function HomePage() {
       loadedUserIds.add(user.id);
       setCloudSyncStatus("syncing");
 
-      const { data, error: readError } = await supabaseClient
+      const { data, error: readError } = await client
         .from("subhumusic_libraries")
         .select("favorites, playlists, recent")
         .eq("user_id", user.id)
