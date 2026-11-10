@@ -17,7 +17,7 @@ import java.util.Locale;
 public class UpdateManager {
 
     private static final String TAG = "UpdateManager";
-    private static final String GITHUB_OWNER = "subhadip2217";
+    private static final String GITHUB_OWNER = "subhu1895991";
     private static final String GITHUB_REPO = "SubHuMusic";
     private static final String PREFS_NAME = "update_prefs";
     private static final String KEY_DOWNLOAD_ID = "download_id";
@@ -34,21 +34,21 @@ public class UpdateManager {
 
     /** Checks the repository's latest stable GitHub Release and offers its APK. */
     public void checkForUpdate(View rootView, String currentVersion) {
-        showStatus("Checking GitHub for the latest SubhuMusic update...");
+        showStatus("Checking GitHub for the latest SUMITX update...");
 
         new Thread(() -> {
             GitHubReleaseClient.ReleaseInfo release = client.getLatestRelease();
 
             if (release == null) {
                 runOnUi(() -> showStatus(
-                        "No published SubhuMusic APK release was found. Check again after a release is published."
+                        "No published SUMITX APK release was found. Check again after a release is published."
                 ));
                 return;
             }
 
             if (!release.hasApk()) {
                 runOnUi(() -> showStatus(
-                        "The latest GitHub release does not contain a SubhuMusic APK yet."
+                        "The latest GitHub release does not contain a SUMITX APK yet."
                 ));
                 return;
             }
@@ -58,10 +58,10 @@ public class UpdateManager {
                 if (isNewer) {
                     promptUpdate(rootView, release);
                 } else {
-                    showStatus("You're already using the latest SubhuMusic version.");
+                    showStatus("You're already using the latest SUMITX version.");
                 }
             });
-        }, "SubhuMusic-UpdateCheck").start();
+        }, "SUMITX-UpdateCheck").start();
     }
 
     private void promptUpdate(View rootView, GitHubReleaseClient.ReleaseInfo release) {
@@ -81,7 +81,7 @@ public class UpdateManager {
         }
 
         new MaterialAlertDialogBuilder(rootView.getContext())
-                .setTitle("SubhuMusic update available")
+                .setTitle("SUMITX update available")
                 .setMessage(message.toString())
                 .setPositiveButton("Download & Install", (dialog, which) ->
                         downloadAndInstall(rootView, release))
@@ -121,10 +121,10 @@ public class UpdateManager {
             }
 
             String safeVersion = release.tagName.replaceAll("[^A-Za-z0-9._-]", "_");
-            String filename = "SubhuMusic-update-" + safeVersion + ".apk";
+            String filename = "SUMITX-update-" + safeVersion + ".apk";
 
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
-            request.setTitle("SubhuMusic " + release.tagName);
+            request.setTitle("SUMITX " + release.tagName);
             request.setDescription("Downloading the latest release APK...");
             request.setMimeType("application/vnd.android.package-archive");
             request.setNotificationVisibility(
@@ -142,10 +142,10 @@ public class UpdateManager {
                     .putString(KEY_DOWNLOAD_VERSION, release.tagName)
                     .apply();
 
-            showStatus("Downloading SubhuMusic " + release.tagName
+            showStatus("Downloading SUMITX " + release.tagName
                     + ". Android will open the installer when the APK is ready.");
         } catch (Exception e) {
-            Log.e(TAG, "Could not start SubhuMusic update download", e);
+            Log.e(TAG, "Could not start SUMITX update download", e);
             showStatus("Could not start the update download. Please try again.");
         }
     }

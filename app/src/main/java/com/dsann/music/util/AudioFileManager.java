@@ -65,16 +65,16 @@ public class AudioFileManager {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Android 10+ - Create temp file in cache for FFmpeg processing
-            File tempDir = new File(context.getCacheDir(), "SubhuMusic_output");
+            File tempDir = new File(context.getCacheDir(), "SUMITX_output");
             if (!tempDir.exists()) tempDir.mkdirs();
 
             File tempFile = new File(tempDir, cleanName);
             Log.d(TAG, "Temp output file for processing: " + tempFile.getAbsolutePath());
             return tempFile;
         } else {
-            // Android 9 and below - Direct file access to Downloads/SubhuMusic
+            // Android 9 and below - Direct file access to Downloads/SUMITX
             File downloadsDir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS), "SubhuMusic");
+                    Environment.DIRECTORY_DOWNLOADS), "SUMITX");
             if (!downloadsDir.exists()) downloadsDir.mkdirs();
 
             File outputFile = new File(downloadsDir, cleanName);
@@ -149,7 +149,7 @@ public class AudioFileManager {
         else if (lowerFileName.endsWith(".wav")) mimeType = "audio/wav";
         else mimeType = "application/octet-stream";
         values.put(MediaStore.Audio.Media.MIME_TYPE, mimeType);
-        values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/SubhuMusic/");
+        values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC + "/SUMITX/");
         values.put(MediaStore.Audio.Media.IS_PENDING, 1);
 
         ContentResolver resolver = context.getContentResolver();
@@ -183,7 +183,7 @@ public class AudioFileManager {
             if (resolver.update(itemUri, ready, null, null) <= 0) {
                 throw new IOException("Could not publish the completed audio file");
             }
-            Log.d(TAG, "File copied to MediaStore successfully: Music/SubhuMusic/" + sourceFile.getName());
+            Log.d(TAG, "File copied to MediaStore successfully: Music/SUMITX/" + sourceFile.getName());
             return true;
         } catch (Exception e) {
             try {

@@ -19,8 +19,8 @@ public class GitHubReleaseClient {
 
     private static final String TAG = "GitHubReleaseClient";
     private static final String[] APK_ASSET_NAMES = {
-            "SubhuMusic-Android.apk",
-            "SubhuMusic.apk",
+            "SUMITX-Android.apk",
+            "SUMITX.apk",
             "app-release.apk"
     };
 
@@ -86,7 +86,7 @@ public class GitHubReleaseClient {
     private HttpURLConnection openConnection(String apiUrl) throws Exception {
         HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl).openConnection();
         connection.setRequestMethod("GET");
-        connection.setRequestProperty("User-Agent", "SubhuMusic-UpdateChecker");
+        connection.setRequestProperty("User-Agent", "SUMITX-UpdateChecker");
         connection.setRequestProperty("Accept", "application/vnd.github+json");
         connection.setConnectTimeout(12000);
         connection.setReadTimeout(15000);
@@ -134,8 +134,8 @@ public class GitHubReleaseClient {
                 JSONObject asset = assets.getJSONObject(i);
                 String name = asset.optString("name", "");
                 String lowerName = name.toLowerCase(Locale.ROOT);
-                if (lowerName.equals("subhumusic-android.apk.sha256")
-                        || lowerName.equals("subhumusic-android.apk.sha256sum")
+                if (lowerName.equals("sumitx-android.apk.sha256")
+                        || lowerName.equals("sumitx-android.apk.sha256sum")
                         || lowerName.equals("checksum.txt")) {
                     checksumUrl = asset.optString("browser_download_url", null);
                     break;

@@ -1,4 +1,4 @@
-name: Build optimized SubhuMusic Android APK
+name: Build optimized SUMITX Android APK
 
 on:
   push:
@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout SubhuMusic
+      - name: Checkout SUMITX
         uses: actions/checkout@v4
         with:
-          repository: subhadip2217/SubhuMusic
+          repository: subhadip2217/SUMITX
           ref: master
 
       - name: Set up JDK 17
@@ -49,7 +49,7 @@ jobs:
       - name: Build optimized ARM64-v8a release
         run: ./gradlew --no-daemon --stacktrace assembleRelease
 
-      - name: Sign optimized APK with the SubhuMusic release key
+      - name: Sign optimized APK with the SUMITX release key
         env:
           SIGNING_KEYSTORE_BASE64: ${{ secrets.BATTERYPULSE_KEYSTORE_BASE64 }}
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.BATTERYPULSE_STORE_PASSWORD }}
@@ -67,8 +67,8 @@ jobs:
           BUILD_DIR="app/build/outputs/apk/release"
           SOURCE_APK="$BUILD_DIR/app-arm64-v8a-release-unsigned.apk"
           KEYSTORE="$RUNNER_TEMP/subhumusic-release-keystore.p12"
-          ALIGNED_APK="$RUNNER_TEMP/SubhuMusic-arm64-v8a-aligned.apk"
-          OUTPUT_APK="$BUILD_DIR/SubhuMusic.apk"
+          ALIGNED_APK="$RUNNER_TEMP/SUMITX-arm64-v8a-aligned.apk"
+          OUTPUT_APK="$BUILD_DIR/SUMITX.apk"
           ZIPALIGN="$ANDROID_HOME/build-tools/37.0.0/zipalign"
           APK_SIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner"
 
@@ -90,10 +90,10 @@ jobs:
           "$APK_SIGNER" verify --verbose "$OUTPUT_APK"
           ls -lh "$OUTPUT_APK"
 
-      - name: Upload optimized SubhuMusic APK
+      - name: Upload optimized SUMITX APK
         uses: actions/upload-artifact@v4
         with:
-          name: SubhuMusic-Android-optimized
-          path: app/build/outputs/apk/release/SubhuMusic.apk
+          name: SUMITX-Android-optimized
+          path: app/build/outputs/apk/release/SUMITX.apk
           if-no-files-found: error
           retention-days: 14

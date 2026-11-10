@@ -494,7 +494,7 @@ class AudioPlaybackService : MediaSessionService() {
     private var cacheAssetsSongId: Long? = null
     @Volatile private var activeVideoCacheVideoId: String? = null
     @Volatile private var activeVideoCacheUris: Set<String> = emptySet()
-    private var currentSongName = "SubhuMusic"
+    private var currentSongName = "SUMITX"
     private var currentAlbumArt: Bitmap? = null
     private var currentAlbumArtSongId: String? = null
     private var artworkRequestGeneration: Long = 0L
@@ -2251,7 +2251,7 @@ class AudioPlaybackService : MediaSessionService() {
                 ?: return@let null
             com.dsann.music.model.SongItem(
                 id,
-                mediaItem.mediaMetadata.title?.toString()?.ifBlank { "SubhuMusic" } ?: "SubhuMusic",
+                mediaItem.mediaMetadata.title?.toString()?.ifBlank { "SUMITX" } ?: "SUMITX",
                 mediaItem.mediaMetadata.artist?.toString()?.ifBlank { "Unknown Artist" } ?: "Unknown Artist",
                 -1L,
                 uri?.toString(),
@@ -2984,7 +2984,7 @@ class AudioPlaybackService : MediaSessionService() {
             }
             notificationBuilder.setContentTitle(notificationTitle)
             notificationBuilder.setContentText(notificationArtist)
-            notificationBuilder.setSubText("SubhuMusic")
+            notificationBuilder.setSubText("SUMITX")
             notificationBuilder.setChannelId("audio_playback_channel")
             notificationBuilder.setOngoing(isPlaying)
             notificationBuilder.setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
@@ -3097,7 +3097,7 @@ private class AdjustableCacheEvictor(initialEnabled: Boolean, initialMaxBytes: L
             if (!removeOne) return
             val oldest = synchronized(lock) { if (spans.isEmpty()) null else spans.pollFirst() } ?: return
             try { cache.removeSpan(oldest) }
-            catch (error: Exception) { android.util.Log.w("SubhuMusicCache", "Unable to evict cached audio", error) }
+            catch (error: Exception) { android.util.Log.w("SUMITXCache", "Unable to evict cached audio", error) }
         }
     }
 }

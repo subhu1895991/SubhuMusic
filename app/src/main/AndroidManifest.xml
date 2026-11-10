@@ -115,12 +115,12 @@
             android:excludeFromRecents="true"
             android:theme="@style/Theme.SpatialFlow.Translucent" />
 
-        <!-- SubhuMusic App Widgets -->
+        <!-- SUMITX App Widgets -->
 
         <receiver
             android:name=".ui.widget.WidgetSmallProvider"
             android:exported="true"
-            android:label="SubhuMusic Aura (2x2)">
+            android:label="SUMITX Aura (2x2)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -132,7 +132,7 @@
         <receiver
             android:name=".ui.widget.WidgetMediumProvider"
             android:exported="true"
-            android:label="SubhuMusic Bridge (4x2)">
+            android:label="SUMITX Bridge (4x2)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -144,7 +144,7 @@
         <receiver
             android:name=".ui.widget.WidgetLargeProvider"
             android:exported="true"
-            android:label="SubhuMusic Dashboard (4x4)">
+            android:label="SUMITX Dashboard (4x4)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

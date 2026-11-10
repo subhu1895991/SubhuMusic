@@ -1,70 +1,70 @@
 <div align="center">
 
-# 🎧 SubhuMusic
+# 🎧 SUMITX
 
 ### Your music. Your space. Your soundtrack.
 
 A feature-rich Android music player built to bring streaming discovery, a personal music library, lyrics, and offline listening together in one place.
 
-[![Latest Release](https://img.shields.io/github/v/release/subhadip2217/SubhuMusic?display_name=tag&style=for-the-badge&color=7c3aed)](https://github.com/subhadip2217/SubhuMusic/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/subhadip2217/SubhuMusic/total?style=for-the-badge&color=0891b2)](https://github.com/subhadip2217/SubhuMusic/releases)
+[![Latest Release](https://img.shields.io/github/v/release/subhu1895991/SubHuMusic?display_name=tag&style=for-the-badge&color=7c3aed)](https://github.com/subhu1895991/SubHuMusic/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/subhu1895991/SubHuMusic/total?style=for-the-badge&color=0891b2)](https://github.com/subhu1895991/SubHuMusic/releases)
 [![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
-[![License](https://img.shields.io/github/license/subhadip2217/SubhuMusic?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/github/license/subhu1895991/SubHuMusic?style=for-the-badge)](LICENSE)
 
 <br/>
 
-<a href="https://github.com/subhadip2217/SubhuMusic/releases/download/v1.8.19/SubhuMusic-Android.apk">
-  <img src="https://img.shields.io/badge/⬇%20DOWNLOAD%20APK-v1.8.19-6D28D9?style=for-the-badge&logo=android&logoColor=white" alt="Download SubhuMusic APK" />
+<a href="https://github.com/subhu1895991/SubHuMusic/releases/latest">
+  <img src="https://img.shields.io/badge/⬇%20DOWNLOAD%20APK-v1.8.19-6D28D9?style=for-the-badge&logo=android&logoColor=white" alt="Download SUMITX APK" />
 </a>
 
 <br/>
 <br/>
 
-**[Download latest version](https://github.com/subhadip2217/SubhuMusic/releases/latest) · [View all releases](https://github.com/subhadip2217/SubhuMusic/releases) · [Report a bug](https://github.com/subhadip2217/SubhuMusic/issues)**
+**[Download latest version](https://github.com/subhu1895991/SubHuMusic/releases/latest) · [View all releases](https://github.com/subhu1895991/SubHuMusic/releases) · [Report a bug](https://github.com/subhu1895991/SubHuMusic/issues)**
 
 </div>
 
 ---
 
-## ✨ About SubhuMusic
+## ✨ About SUMITX
 
-SubhuMusic is an Android music application designed around a simple idea: make discovering, playing, and managing music feel seamless.
+SUMITX is an Android music application designed around a simple idea: make discovering, playing, and managing music feel seamless.
 
 Explore music, enjoy a dedicated player experience, follow lyrics, organise your library, and save tracks for offline listening — all from one app.
 
 ## 📱 Screenshots
 
-Take a look around SubhuMusic. These screenshots are from the app itself.
+Take a look around SUMITX. These screenshots are from the app itself.
 
 <div align="center">
 
 <table>
   <tr>
-    <td align="center" width="50%"><img src="AppScreenShot/1.png" alt="SubhuMusic screenshot 1" width="260"/><br/><sub>01</sub></td>
-    <td align="center" width="50%"><img src="AppScreenShot/2.png" alt="SubhuMusic screenshot 2" width="260"/><br/><sub>02</sub></td>
+    <td align="center" width="50%"><img src="AppScreenShot/1.png" alt="SUMITX screenshot 1" width="260"/><br/><sub>01</sub></td>
+    <td align="center" width="50%"><img src="AppScreenShot/2.png" alt="SUMITX screenshot 2" width="260"/><br/><sub>02</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="AppScreenShot/3.png" alt="SubhuMusic screenshot 3" width="260"/><br/><sub>03</sub></td>
-    <td align="center"><img src="AppScreenShot/4.png" alt="SubhuMusic screenshot 4" width="260"/><br/><sub>04</sub></td>
+    <td align="center"><img src="AppScreenShot/3.png" alt="SUMITX screenshot 3" width="260"/><br/><sub>03</sub></td>
+    <td align="center"><img src="AppScreenShot/4.png" alt="SUMITX screenshot 4" width="260"/><br/><sub>04</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="AppScreenShot/5.png" alt="SubhuMusic screenshot 5" width="260"/><br/><sub>05</sub></td>
-    <td align="center"><img src="AppScreenShot/6.png" alt="SubhuMusic screenshot 6" width="260"/><br/><sub>06</sub></td>
+    <td align="center"><img src="AppScreenShot/5.png" alt="SUMITX screenshot 5" width="260"/><br/><sub>05</sub></td>
+    <td align="center"><img src="AppScreenShot/6.png" alt="SUMITX screenshot 6" width="260"/><br/><sub>06</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="AppScreenShot/7.png" alt="SubhuMusic screenshot 7" width="260"/><br/><sub>07</sub></td>
-    <td align="center"><img src="AppScreenShot/8.png" alt="SubhuMusic screenshot 8" width="260"/><br/><sub>08</sub></td>
+    <td align="center"><img src="AppScreenShot/7.png" alt="SUMITX screenshot 7" width="260"/><br/><sub>07</sub></td>
+    <td align="center"><img src="AppScreenShot/8.png" alt="SUMITX screenshot 8" width="260"/><br/><sub>08</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="AppScreenShot/9.png" alt="SubhuMusic screenshot 9" width="260"/><br/><sub>09</sub></td>
-    <td align="center"><img src="AppScreenShot/10.png" alt="SubhuMusic screenshot 10" width="260"/><br/><sub>10</sub></td>
+    <td align="center"><img src="AppScreenShot/9.png" alt="SUMITX screenshot 9" width="260"/><br/><sub>09</sub></td>
+    <td align="center"><img src="AppScreenShot/10.png" alt="SUMITX screenshot 10" width="260"/><br/><sub>10</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="AppScreenShot/11.png" alt="SubhuMusic screenshot 11" width="260"/><br/><sub>11</sub></td>
-    <td align="center"><img src="AppScreenShot/12.png" alt="SubhuMusic screenshot 12" width="260"/><br/><sub>12</sub></td>
+    <td align="center"><img src="AppScreenShot/11.png" alt="SUMITX screenshot 11" width="260"/><br/><sub>11</sub></td>
+    <td align="center"><img src="AppScreenShot/12.png" alt="SUMITX screenshot 12" width="260"/><br/><sub>12</sub></td>
   </tr>
   <tr>
-    <td align="center" colspan="2"><img src="AppScreenShot/13.png" alt="SubhuMusic screenshot 13" width="260"/><br/><sub>13</sub></td>
+    <td align="center" colspan="2"><img src="AppScreenShot/13.png" alt="SUMITX screenshot 13" width="260"/><br/><sub>13</sub></td>
   </tr>
 </table>
 
@@ -86,11 +86,11 @@ Take a look around SubhuMusic. These screenshots are from the app itself.
 
 ## 📥 Download & Install
 
-1. Open the **[latest SubhuMusic release](https://github.com/subhadip2217/SubhuMusic/releases/latest)**.
-2. Download **SubhuMusic-Android.apk** from the Assets section.
+1. Open the **[latest SUMITX release](https://github.com/subhu1895991/SubHuMusic/releases/latest)**.
+2. Download **SUMITX-Android.apk** from the Assets section.
 3. Open the downloaded APK on your Android device.
 4. If Android asks, allow your browser or file manager to install apps from that source.
-5. Follow the installation prompts and open SubhuMusic.
+5. Follow the installation prompts and open SUMITX.
 
 ### Latest release — v1.8.19
 
@@ -107,7 +107,7 @@ Take a look around SubhuMusic. These screenshots are from the app itself.
 
 ## 🛠 Built With
 
-SubhuMusic is developed for Android using:
+SUMITX is developed for Android using:
 
 - **Kotlin & Java**
 - **Jetpack Compose** and Android UI components
@@ -121,17 +121,17 @@ SubhuMusic is developed for Android using:
 
 ## 🤝 Feedback & Contributions
 
-Found a bug, have an idea, or want to help improve SubhuMusic?
+Found a bug, have an idea, or want to help improve SUMITX?
 
-- [Open an issue](https://github.com/subhadip2217/SubhuMusic/issues)
-- [Browse the source code](https://github.com/subhadip2217/SubhuMusic)
-- [Explore releases](https://github.com/subhadip2217/SubhuMusic/releases)
+- [Open an issue](https://github.com/subhu1895991/SubHuMusic/issues)
+- [Browse the source code](https://github.com/subhu1895991/SubHuMusic)
+- [Explore releases](https://github.com/subhu1895991/SubHuMusic/releases)
 
 Please include your Android version, device model, app version, and steps to reproduce when reporting a problem. Do not post passwords, API keys, or other private information in issues.
 
 ## ⚖️ Disclaimer
 
-SubhuMusic is an independent, community-developed project and is **not affiliated with, endorsed by, or officially connected to YouTube, YouTube Music, Google, or any music streaming service**.
+SUMITX is an independent, community-developed project and is **not affiliated with, endorsed by, or officially connected to YouTube, YouTube Music, Google, or any music streaming service**.
 
 All trademarks and content belong to their respective owners. Users are responsible for ensuring that their use of the app and any downloaded content complies with applicable laws, platform terms, and the rights of content owners.
 
@@ -147,7 +147,7 @@ All trademarks and content belong to their respective owners. Users are responsi
 
 **Founder · Developer · Project Maintainer**
 
-The person behind SubhuMusic — working on its development, Android releases, improvements, and maintenance.
+The person behind SUMITX — working on its development, Android releases, improvements, and maintenance.
 
 [![GitHub](https://img.shields.io/badge/GitHub-subhadip2217-181717?style=for-the-badge&logo=github)](https://github.com/subhadip2217)
 [![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/subhadip.tantubay/?hl=en)
@@ -159,7 +159,7 @@ The person behind SubhuMusic — working on its development, Android releases, i
 
 <div align="center">
 
-**Thanks for checking out SubhuMusic!**
+**Thanks for checking out SUMITX!**
 
 If you enjoy the project, consider giving the repository a ⭐. It helps more people discover it.
 

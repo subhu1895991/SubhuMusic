@@ -1,6 +1,6 @@
 name: Manual Android + Windows Release
 
-run-name: Publish SubhuMusic ${{ inputs.release_tag }} (Android + D.S Music Windows)
+run-name: Publish SUMITX ${{ inputs.release_tag }} (Android + D.S Music Windows)
 
 on:
   workflow_dispatch:
@@ -41,7 +41,7 @@ jobs:
       - name: Checkout Android source
         uses: actions/checkout@v7
         with:
-          repository: subhadip2217/SubHuMusic
+          repository: subhu1895991/SubHuMusic
           ref: ${{ inputs.phone_ref }}
 
       - name: Set up JDK 17
@@ -101,7 +101,7 @@ jobs:
             -PAPP_VERSION_CODE="$APP_VERSION_CODE" \
             assembleRelease
 
-      - name: Sign Android APK with the SubhuMusic release key
+      - name: Sign Android APK with the SUMITX release key
         env:
           SIGNING_KEYSTORE_BASE64: ${{ secrets.BATTERYPULSE_KEYSTORE_BASE64 }}
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.BATTERYPULSE_STORE_PASSWORD }}
@@ -122,7 +122,7 @@ jobs:
 
           KEYSTORE="$RUNNER_TEMP/subhumusic-release-keystore.p12"
           ALIGNED_APK="$RUNNER_TEMP/subhumusic-android-aligned.apk"
-          OUTPUT_APK="$RUNNER_TEMP/SubhuMusic-Android.apk"
+          OUTPUT_APK="$RUNNER_TEMP/SUMITX-Android.apk"
           ZIPALIGN="$ANDROID_HOME/build-tools/37.0.0/zipalign"
           APK_SIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner"
 
@@ -141,10 +141,10 @@ jobs:
             --out "$OUTPUT_APK" "$ALIGNED_APK"
 
           mkdir -p release-assets/android
-          cp "$OUTPUT_APK" release-assets/android/SubhuMusic-Android.apk
-          sha256sum release-assets/android/SubhuMusic-Android.apk \
-            > release-assets/android/SubhuMusic-Android.apk.sha256
-          "$APK_SIGNER" verify --verbose --print-certs release-assets/android/SubhuMusic-Android.apk
+          cp "$OUTPUT_APK" release-assets/android/SUMITX-Android.apk
+          sha256sum release-assets/android/SUMITX-Android.apk \
+            > release-assets/android/SUMITX-Android.apk.sha256
+          "$APK_SIGNER" verify --verbose --print-certs release-assets/android/SUMITX-Android.apk
 
       - name: Upload Android release assets
         uses: actions/upload-artifact@v7
@@ -228,7 +228,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s release-assets/android/SubhuMusic-Android.apk
+          test -s release-assets/android/SUMITX-Android.apk
           test -s release-assets/windows/D.S-Music-Windows-Setup.exe
           ls -lh release-assets/android release-assets/windows
 
@@ -237,14 +237,14 @@ jobs:
         with:
           tag_name: ${{ inputs.release_tag }}
           target_commitish: ${{ inputs.phone_ref }}
-          name: SubhuMusic ${{ inputs.release_tag }} — Android + D.S Music Windows
+          name: SUMITX ${{ inputs.release_tag }} — Android + D.S Music Windows
           draft: false
           prerelease: ${{ inputs.prerelease }}
           make_latest: true
           generate_release_notes: true
           fail_on_unmatched_files: true
           files: |
-            release-assets/android/SubhuMusic-Android.apk
-            release-assets/android/SubhuMusic-Android.apk.sha256
+            release-assets/android/SUMITX-Android.apk
+            release-assets/android/SUMITX-Android.apk.sha256
             release-assets/windows/D.S-Music-Windows-Setup.exe
             release-assets/windows/D.S-Music-Windows-Setup.exe.sha256

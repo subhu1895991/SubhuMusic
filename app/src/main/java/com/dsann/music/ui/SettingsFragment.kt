@@ -33,6 +33,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -116,6 +117,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -1251,7 +1253,7 @@ fun SettingsScreenContent(
         composable(SettingsRoute.BackupRestore.route) {
             BackupRestoreScreen(
                 navController = navController,
-                onBackupClick = { exportBackupLauncher.launch("SubhuMusic-backup.json") },
+                onBackupClick = { exportBackupLauncher.launch("SUMITX-backup.json") },
                 onRestoreClick = { importBackupLauncher.launch(arrayOf("application/json")) }
             )
         }
@@ -2160,7 +2162,7 @@ private fun AccountScreen(
                             )
                             if (ytCookies != null) {
                                 Text(
-                                    text = "Profile: SubhuMusic User",
+                                    text = "Profile: SUMITX User",
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
@@ -3125,7 +3127,7 @@ private fun AudioFormatRow(
             Column {
                 Text(text = title, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    text = "Requests this source format without transcoding. If a track has no matching stream, SubhuMusic asks you to choose from formats that track actually offers.",
+                    text = "Requests this source format without transcoding. If a track has no matching stream, SUMITX asks you to choose from formats that track actually offers.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -3165,7 +3167,7 @@ private fun AudioFormatRow(
 private fun WhatsNewScreen(navController: androidx.navigation.NavController) {
     val releases by androidx.compose.runtime.produceState<List<com.dsann.music.update.GitHubReleaseClient.ReleaseInfo>?>(initialValue = null) {
         withContext(Dispatchers.IO) {
-            val client = com.dsann.music.update.GitHubReleaseClient("subhadip2217", "SubHuMusic")
+            val client = com.dsann.music.update.GitHubReleaseClient("subhu1895991", "SubHuMusic")
             value = client.getAllReleases()
         }
     }
@@ -3299,20 +3301,12 @@ private fun AboutScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Hero App Logo (Elegant Box)
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_applogo),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(72.dp)
-                )
-            }
+            Image(
+                painter = painterResource(R.drawable.sumitx_logo),
+                contentDescription = stringResource(R.string.app_name),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.size(120.dp)
+            )
             
             Spacer(modifier = Modifier.height(24.dp))
             
@@ -4016,10 +4010,10 @@ private fun AppLogoSection(isLandscape: Boolean) {
             .padding(top = if (isLandscape) 8.dp else 16.dp, bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_applogo),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+        Image(
+            painter = painterResource(R.drawable.sumitx_logo),
+            contentDescription = stringResource(R.string.app_name),
+            contentScale = ContentScale.Fit,
             modifier = Modifier.size(iconSize)
         )
         Text(
@@ -4145,7 +4139,7 @@ private fun FeedbackScreen(navController: androidx.navigation.NavController) {
                             modifier = Modifier.clickable {
                                 val title = URLEncoder.encode("[Bug] ", "UTF-8")
                                 val body = URLEncoder.encode("## Description\n\n\n## Device Information\n$debugInfo\n\n## Steps to Reproduce\n1.\n2.\n3.\n", "UTF-8")
-                                val url = "https://github.com/subhadip2217/SubHuMusic/issues/new?title=$title&body=$body"
+                                val url = "https://github.com/subhu1895991/SubhuMusic/issues/new?title=$title&body=$body"
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                             }
                         )
@@ -4153,13 +4147,13 @@ private fun FeedbackScreen(navController: androidx.navigation.NavController) {
                     {
                         ListItem(
                             headlineContent = { Text("Request Feature", style = MaterialTheme.typography.bodyLarge) },
-                            supportingContent = { Text("Suggest a new feature for SubhuMusic", style = MaterialTheme.typography.bodyMedium) },
+                            supportingContent = { Text("Suggest a new feature for SUMITX", style = MaterialTheme.typography.bodyMedium) },
                             leadingContent = { Icon(Icons.Rounded.OpenInNew, null, tint = MaterialTheme.colorScheme.primary) },
                             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                             modifier = Modifier.clickable {
                                 val title = URLEncoder.encode("[Feature] ", "UTF-8")
                                 val body = URLEncoder.encode("## Feature Description\n\n\n## Why is this needed?\n\n", "UTF-8")
-                                val url = "https://github.com/subhadip2217/SubHuMusic/issues/new?title=$title&body=$body"
+                                val url = "https://github.com/subhu1895991/SubhuMusic/issues/new?title=$title&body=$body"
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                             }
                         )

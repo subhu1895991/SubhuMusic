@@ -1,10 +1,10 @@
-name: Build and upload SubhuMusic Android 6+ APK
+name: Build and upload SUMITX Android 6+ APK
 
 on:
   workflow_call:
     inputs:
       source_ref:
-        description: SubhuMusic branch, tag, or commit to build
+        description: SUMITX branch, tag, or commit to build
         required: false
         type: string
         default: master
@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
     inputs:
       source_ref:
-        description: SubhuMusic branch, tag, or commit to build
+        description: SUMITX branch, tag, or commit to build
         required: true
         type: string
         default: master
@@ -43,7 +43,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v7
         with:
-          repository: subhadip2217/SubHuMusic
+          repository: subhu1895991/SubHuMusic
           ref: ${{ inputs.source_ref || github.ref_name }}
 
       - name: Set up JDK 17
@@ -68,7 +68,7 @@ jobs:
       - name: Compile ARM64-v8a release APK
         run: gradle --no-daemon --warning-mode all assembleRelease
 
-      - name: Sign with the SubhuMusic release key and compress APK
+      - name: Sign with the SUMITX release key and compress APK
         env:
           SIGNING_KEYSTORE_BASE64: ${{ secrets.BATTERYPULSE_KEYSTORE_BASE64 }}
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.BATTERYPULSE_STORE_PASSWORD }}
@@ -89,9 +89,9 @@ jobs:
 
           BUILD_DIR="app/build/outputs/apk/release"
           SOURCE_APK="$BUILD_DIR/app-arm64-v8a-release-unsigned.apk"
-          ALIGNED_APK="$RUNNER_TEMP/SubhuMusic-arm64-v8a-aligned.apk"
-          OUTPUT_APK="$BUILD_DIR/SubhuMusic.apk"
-          OUTPUT_ZIP="$BUILD_DIR/SubhuMusic.zip"
+          ALIGNED_APK="$RUNNER_TEMP/SUMITX-arm64-v8a-aligned.apk"
+          OUTPUT_APK="$BUILD_DIR/SUMITX.apk"
+          OUTPUT_ZIP="$BUILD_DIR/SUMITX.zip"
           ZIPALIGN="$ANDROID_HOME/build-tools/37.0.0/zipalign"
           APK_SIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner"
 
@@ -110,8 +110,8 @@ jobs:
       - name: Upload compressed signed APK artifact
         uses: actions/upload-artifact@v7
         with:
-          name: SubhuMusic-Android-6plus
-          path: app/build/outputs/apk/release/SubhuMusic.zip
+          name: SUMITX-Android-6plus
+          path: app/build/outputs/apk/release/SUMITX.zip
           archive: false
           if-no-files-found: error
           retention-days: 14

@@ -122,7 +122,7 @@ object SongDownloader {
 
     /**
      * Resolve an app-downloaded audio file before trying Media3's online stream resolver.
-     * Video-ID mappings are preferred; the SubhuMusic folder and legacy folder names from earlier installs
+     * Video-ID mappings are preferred; the SUMITX folder and legacy folder names from earlier installs
      * provide a migration path for downloads created before mappings were recorded.
      */
     fun findDownloadedUri(
@@ -145,7 +145,7 @@ object SongDownloader {
         val extensions = listOf("m4a", "mp3", "webm", "opus", "ogg", "flac", "aac", "wav")
         for (extension in extensions) {
             val filename = "$baseName.$extension"
-            val found = findSubhuMusicMediaStoreUri(context, filename)
+            val found = findSumitXMediaStoreUri(context, filename)
                 ?: findLegacyDownloadedFile(filename)
             if (found != null && isUriReadable(context, found)) {
                 prefs.edit().putString(mappingKey, found.toString()).apply()
@@ -158,7 +158,7 @@ object SongDownloader {
     /** Record the permanent MediaStore URI immediately after the file is published. */
     private fun rememberDownloadedSong(context: Context, videoId: String, outputFile: File) {
         if (videoId.isBlank()) return
-        val uri = findSubhuMusicMediaStoreUri(context, outputFile.name)
+        val uri = findSumitXMediaStoreUri(context, outputFile.name)
             ?: if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && outputFile.isFile) {
                 Uri.fromFile(outputFile)
             } else null
@@ -173,7 +173,7 @@ object SongDownloader {
         }
     }
 
-    private fun findSubhuMusicMediaStoreUri(context: Context, filename: String): Uri? {
+    private fun findSumitXMediaStoreUri(context: Context, filename: String): Uri? {
         val projection = mutableListOf(MediaStore.Audio.Media._ID).apply {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 add(MediaStore.Audio.Media.DATA)
@@ -200,12 +200,14 @@ object SongDownloader {
                     val location = if (locationColumn >= 0) cursor.getString(locationColumn).orEmpty() else ""
                     val normalizedLocation = location.replace('\\', '/').lowercase()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        if (!normalizedLocation.contains("subhumusic/") &&
+                        if (!normalizedLocation.contains("sumitx/") &&
+                            !normalizedLocation.contains("subhumusic/") &&
                             !normalizedLocation.contains("spatialflow/") &&
                             !normalizedLocation.contains("d.s music/")
                         ) continue
                     } else {
-                        if (!normalizedLocation.contains("/subhumusic/") &&
+                        if (!normalizedLocation.contains("/sumitx/") &&
+                            !normalizedLocation.contains("/subhumusic/") &&
                             !normalizedLocation.contains("/spatialflow/") &&
                             !normalizedLocation.contains("/d.s music/")
                         ) continue
@@ -226,7 +228,7 @@ object SongDownloader {
     private fun findLegacyDownloadedFile(filename: String): Uri? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return null
         val downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = listOf("SubhuMusic", "D.S Music", "SpatialFlow")
+        val file = listOf("SUMITX", "SubhuMusic", "D.S Music", "SpatialFlow")
             .asSequence()
             .map { folder -> File(File(downloads, folder), filename) }
             .firstOrNull { it.isFile }
@@ -670,7 +672,7 @@ object SongDownloader {
             }
 
             val sourceComment = if (fromCache) {
-                "Exported from SubhuMusic cached audio (video ID: $videoId)"
+                "Exported from SUMITX cached audio (video ID: $videoId)"
             } else {
                 "Downloaded from YouTube Music (video ID: $videoId)"
             }
@@ -786,7 +788,7 @@ object SongDownloader {
             }
             outputFile.copyTo(stagedFile, overwrite = true)
             val sourceComment = if (fromCache) {
-                "Exported from SubhuMusic cached audio (video ID: $videoId)"
+                "Exported from SUMITX cached audio (video ID: $videoId)"
             } else {
                 "Downloaded from YouTube Music (video ID: $videoId)"
             }
@@ -1114,10 +1116,10 @@ object SongDownloader {
                 .replace(Regex("[^a-zA-Z0-9._\\s()\\[\\]-]"), "_")
         }
 
-        // 1. Check the current SubhuMusic folder and legacy folders before scoped storage.
+        // 1. Check the current SUMITX folder and legacy folders before scoped storage.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             val downloads = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val appFolders = listOf("SubhuMusic", "D.S Music", "SpatialFlow").map { File(downloads, it) }
+            val appFolders = listOf("SUMITX", "SubhuMusic", "D.S Music", "SpatialFlow").map { File(downloads, it) }
             if (cleanNames.any { name -> appFolders.any { folder -> File(folder, name).isFile } }) return true
         }
 

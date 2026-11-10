@@ -729,7 +729,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val client = GitHubReleaseClient("subhadip2217", "SubHuMusic")
+                val client = GitHubReleaseClient("subhu1895991", "SubhuMusic")
                 val release = client.latestRelease ?: return@launch
 
                 val currentVersion = BuildConfig.VERSION_NAME

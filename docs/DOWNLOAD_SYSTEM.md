@@ -1,6 +1,6 @@
-# SubhuMusic Download System Architecture
+# SUMITX Download System Architecture
 
-SubhuMusic features a robust, high-fidelity audio download system designed to provide a seamless offline listening experience. This document outlines the technical implementation of how songs are extracted, downloaded, tagged, and stored.
+SUMITX features a robust, high-fidelity audio download system designed to provide a seamless offline listening experience. This document outlines the technical implementation of how songs are extracted, downloaded, tagged, and stored.
 
 ## 🏗 Core Architecture
 
@@ -22,7 +22,7 @@ When a user triggers a download, the app first needs a direct audio stream URL.
 - **Sanitization**: All filenames are sanitized to remove illegal characters (e.g., `?`, `*`, `:`) to ensure compatibility across all Android versions.
 - **Pathing**:
     - **Android 10+**: Files are initially created in the app's internal cache for processing.
-    - **Android 9 & Below**: Files are created directly in `Downloads/SubhuMusic`.
+    - **Android 9 & Below**: Files are created directly in `Downloads/SUMITX`.
 
 ### 3. High-Speed Download
 - **Mechanism**: The app utilizes `HttpURLConnection` to stream data from the extracted URL.
@@ -33,7 +33,7 @@ When a user triggers a download, the app first needs a direct audio stream URL.
 
 ## 🏷 Metadata & ID3 Tagging
 
-SubhuMusic ensures that downloaded files look professional in any media player by embedding rich metadata directly into the `.mp3` file using the **JAudioTagger** library.
+SUMITX ensures that downloaded files look professional in any media player by embedding rich metadata directly into the `.mp3` file using the **JAudioTagger** library.
 
 ### 🧹 Title & Artist Cleaning
 The app automatically "cleans" titles to remove common YouTube suffixes that clutter your library:
@@ -53,12 +53,12 @@ A song isn't complete without its cover art.
 ## 📂 Storage & Media Integration
 
 ### 📁 Storage Locations
-SubhuMusic respects modern Android storage guidelines:
-- **Primary Location**: `Music/SubhuMusic/`
-- **Fallback (Legacy)**: `Downloads/SubhuMusic/`
+SUMITX respects modern Android storage guidelines:
+- **Primary Location**: `Music/SUMITX/`
+- **Fallback (Legacy)**: `Downloads/SUMITX/`
 
 ### 🔍 MediaStore Synchronization
-To ensure the downloaded songs appear instantly in SubhuMusic and other music apps:
+To ensure the downloaded songs appear instantly in SUMITX and other music apps:
 1. **Android 10+**: The app uses the `MediaStore` API to insert a new entry. It sets `IS_PENDING = 1` while copying, then releases it so the system scanner can index it immediately.
 2. **Legacy**: The app triggers a `MEDIA_SCANNER_SCAN_FILE` broadcast to force the system to refresh the media database.
 
