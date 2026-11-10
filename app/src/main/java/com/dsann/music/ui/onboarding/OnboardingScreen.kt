@@ -315,7 +315,7 @@ package com.dsann.music.ui.onboarding
     fun WelcomePage(pageOffsetProvider: () -> Float) {
         ImmersivePageLayout(
             pageOffsetProvider = pageOffsetProvider,
-            drawableRes = R.drawable.ic_applogo,
+            drawableRes = R.drawable.sumitx_logo,
             iconTint = MaterialTheme.colorScheme.onSurface
         ) {
             Text(
