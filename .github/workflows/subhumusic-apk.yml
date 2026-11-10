@@ -45,7 +45,7 @@ jobs:
       - name: Install Android SDK 37 and Build Tools
         run: sdkmanager --channel=3 "platforms;android-37.0" "build-tools;37.0.0"
 
-      # Standard debug variant: no R8/resource shrinking and automatic debug signing.
+      # Guarded R8/resource shrinking uses app keep rules; automatic debug signing, no publishing.
       # No keystore secrets, release signing, or publishing.
       - name: Build installable ARM64 debug APK
         run: ./gradlew --no-daemon --stacktrace assembleDebug
