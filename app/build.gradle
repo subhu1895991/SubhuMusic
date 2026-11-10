@@ -50,8 +50,11 @@ android {
     buildTypes {
         debug {
             debuggable true
-            minifyEnabled false
-            shrinkResources false
+            // Shrink unused library code/resources. The existing ProGuard rules keep
+            // all SUMITX app classes and feature entry points intact.
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
