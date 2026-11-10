@@ -24,7 +24,7 @@ jobs:
       - name: Checkout SUMITX
         uses: actions/checkout@v4
         with:
-          repository: subhadip2217/SUMITX
+          repository: subhu1895991/SubHuMusic
           ref: master
 
       - name: Set up JDK 17
