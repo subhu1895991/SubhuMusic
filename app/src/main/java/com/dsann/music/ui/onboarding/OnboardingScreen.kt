@@ -1011,7 +1011,7 @@ package com.dsann.music.ui.onboarding
     
         ImmersivePageLayout(
             pageOffsetProvider = pageOffsetProvider,
-            drawableRes = if (isLoggedIn && userProfileUrl != null) null else R.drawable.ic_applogo,
+            drawableRes = if (isLoggedIn && userProfileUrl != null) null else R.drawable.sumitx_logo,
             imageUrl = if (isLoggedIn) userProfileUrl else null,
             iconTint = MaterialTheme.colorScheme.onSurface
         ) {
