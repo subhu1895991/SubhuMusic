@@ -140,10 +140,10 @@ All trademarks and content belong to their respective owners. Users are responsi
 <div align="center">
 
 <a href="https://github.com/subhu1895991">
-  <img src="app/src/main/res/drawable-nodpi/sunut_debnath.webp" width="120" alt="Sunut Debnath" />
+  <img src="app/src/main/res/drawable-nodpi/sumit_debnath.webp" width="120" alt="Sumit Debnath" />
 </a>
 
-### [Sunut Debnath](https://github.com/subhu1895991)
+### [Sumit Debnath](https://github.com/subhu1895991)
 
 **Founder · Developer · Project Maintainer**
 
