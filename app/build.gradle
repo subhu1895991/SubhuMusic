@@ -8,8 +8,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.54.0"
 }
 
-// Versioned release workflows pass these properties so the installed APK can be updated
-// in place. Local/debug builds keep the current fallback version.
+// Direct-install debug APK version. No release publishing workflow is used.
 def appVersionName = (project.findProperty('APP_VERSION_NAME') ?: '1.8.18').toString()
 def appVersionCode = (project.findProperty('APP_VERSION_CODE') ?: '26').toString().toInteger()
 
@@ -45,23 +44,14 @@ android {
         compose true
     }
 
+    // Build the standard debug variant for direct APK installation.
+    // It is signed automatically with Android's debug key and does not run R8,
+    // so runtime-loaded classes and feature components are not stripped.
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
-        // Installable, size-optimized build for sharing without a private release keystore.
-        // Reuses release R8/resource shrinking and is signed with the local debug certificate.
-        optimized {
-            initWith release
-            signingConfig signingConfigs.debug
-            matchingFallbacks = ['release']
-        }
-
         debug {
             debuggable true
+            minifyEnabled false
+            shrinkResources false
         }
     }
 

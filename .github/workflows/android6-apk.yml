@@ -1,4 +1,4 @@
-name: Build SUMITX Android 6+ APK (manual, no signing secrets)
+name: Build SUMITX Android 6+ APK (manual debug build)
 
 on:
   # This workflow is manual-only. The automatic APK build is handled by
@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build installable Android 6+ APK (no release signing)
+    name: Build installable Android 6+ debug APK
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -47,16 +47,16 @@ jobs:
       - name: Install Android SDK 37 and Build Tools
         run: sdkmanager --channel=3 "platforms;android-37.0" "build-tools;37.0.0"
 
-      # The optimized build supports minSdk 23 (Android 6+) and is signed
-      # using the automatic debug key. It does not use release keystore secrets.
-      - name: Build optimized Android 6+ APK
-        run: ./gradlew --no-daemon --stacktrace assembleOptimized
+      # The normal debug build supports minSdk 23 (Android 6+) and is signed
+      # using Android's automatic debug key; no secrets are required.
+      - name: Build standard Android 6+ debug APK
+        run: ./gradlew --no-daemon --stacktrace assembleDebug
 
       - name: Prepare APK artifact
         shell: bash
         run: |
           set -euo pipefail
-          APK="$(find app/build/outputs/apk/optimized -type f -name '*.apk' -print -quit)"
+          APK="$(find app/build/outputs/apk/debug -type f -name '*.apk' -print -quit)"
           test -n "$APK"
           mkdir -p dist
           cp "$APK" dist/SUMITX-Android-6plus.apk
