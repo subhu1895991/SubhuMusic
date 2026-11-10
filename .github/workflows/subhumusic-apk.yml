@@ -1,4 +1,4 @@
-name: Build optimized SUMITX Android APK
+name: Build SUMITX APK
 
 on:
   push:
@@ -18,13 +18,13 @@ permissions:
 
 jobs:
   build:
+    name: Build installable Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - name: Checkout SUMITX
         uses: actions/checkout@v4
         with:
-          repository: subhu1895991/SubHuMusic
           ref: master
 
       - name: Set up JDK 17
@@ -41,59 +41,28 @@ jobs:
         with:
           packages: platform-tools
 
-      - name: Install Android 17 SDK and Build Tools
+      - name: Install Android SDK 37 and Build Tools
         run: sdkmanager --channel=3 "platforms;android-37.0" "build-tools;37.0.0"
 
-      # Release enables the R8 code shrinker and unused-resource removal
-      # configured in app/build.gradle. The ARM64-only split stays enabled.
-      - name: Build optimized ARM64-v8a release
-        run: ./gradlew --no-daemon --stacktrace assembleRelease
+      # Debug APKs are signed automatically with Android's debug key.
+      # No release keystore, passwords, release tag, or GitHub Release is required.
+      - name: Build ARM64 debug APK
+        run: ./gradlew --no-daemon --stacktrace assembleDebug
 
-      - name: Sign optimized APK with the SUMITX release key
-        env:
-          SIGNING_KEYSTORE_BASE64: ${{ secrets.BATTERYPULSE_KEYSTORE_BASE64 }}
-          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.BATTERYPULSE_STORE_PASSWORD }}
-          SIGNING_KEY_ALIAS: ${{ secrets.BATTERYPULSE_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.BATTERYPULSE_KEY_PASSWORD }}
-          SIGNING_KEYSTORE_TYPE: PKCS12
+      - name: Prepare SUMITX APK artifact
         shell: bash
         run: |
           set -euo pipefail
-          : "${SIGNING_KEYSTORE_BASE64:?Missing BATTERYPULSE_KEYSTORE_BASE64}"
-          : "${SIGNING_KEYSTORE_PASSWORD:?Missing BATTERYPULSE_STORE_PASSWORD}"
-          : "${SIGNING_KEY_ALIAS:?Missing BATTERYPULSE_KEY_ALIAS}"
-          : "${SIGNING_KEY_PASSWORD:?Missing BATTERYPULSE_KEY_PASSWORD}"
+          APK="$(find app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          test -n "$APK"
+          mkdir -p dist
+          cp "$APK" dist/SUMITX-debug.apk
+          ls -lh dist/SUMITX-debug.apk
 
-          BUILD_DIR="app/build/outputs/apk/release"
-          SOURCE_APK="$BUILD_DIR/app-arm64-v8a-release-unsigned.apk"
-          KEYSTORE="$RUNNER_TEMP/subhumusic-release-keystore.p12"
-          ALIGNED_APK="$RUNNER_TEMP/SUMITX-arm64-v8a-aligned.apk"
-          OUTPUT_APK="$BUILD_DIR/SUMITX.apk"
-          ZIPALIGN="$ANDROID_HOME/build-tools/37.0.0/zipalign"
-          APK_SIGNER="$ANDROID_HOME/build-tools/37.0.0/apksigner"
-
-          test -s "$SOURCE_APK"
-          printf '%s' "$SIGNING_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
-          chmod 600 "$KEYSTORE"
-          keytool -list -storetype "$SIGNING_KEYSTORE_TYPE" -keystore "$KEYSTORE" \
-            -storepass "$SIGNING_KEYSTORE_PASSWORD" -alias "$SIGNING_KEY_ALIAS" >/dev/null
-
-          "$ZIPALIGN" -f -p 4 "$SOURCE_APK" "$ALIGNED_APK"
-          "$APK_SIGNER" sign \
-            --ks "$KEYSTORE" \
-            --ks-type "$SIGNING_KEYSTORE_TYPE" \
-            --ks-key-alias "$SIGNING_KEY_ALIAS" \
-            --ks-pass env:SIGNING_KEYSTORE_PASSWORD \
-            --key-pass env:SIGNING_KEY_PASSWORD \
-            --out "$OUTPUT_APK" "$ALIGNED_APK"
-
-          "$APK_SIGNER" verify --verbose "$OUTPUT_APK"
-          ls -lh "$OUTPUT_APK"
-
-      - name: Upload optimized SUMITX APK
+      - name: Upload SUMITX APK
         uses: actions/upload-artifact@v4
         with:
-          name: SUMITX-Android-optimized
-          path: app/build/outputs/apk/release/SUMITX.apk
+          name: SUMITX-APK
+          path: dist/SUMITX-debug.apk
           if-no-files-found: error
           retention-days: 14
