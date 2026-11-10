@@ -319,11 +319,11 @@ package com.dsann.music.ui.onboarding
             iconTint = MaterialTheme.colorScheme.onSurface
         ) {
             Text(
-                text = "Welcome\nto SubhuMusic.",
+                text = "Welcome\nto SUMITX.",
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Black,
-                fontSize = 42.sp,
-                lineHeight = 48.sp,
+                fontSize = 32.sp,
+                lineHeight = 38.sp,
                 letterSpacing = (-0.5).sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.graphicsLayer { 
