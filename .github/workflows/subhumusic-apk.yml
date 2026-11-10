@@ -1,4 +1,4 @@
-name: Build SUMITX APK
+name: Build size-optimized SUMITX APK
 
 on:
   push:
@@ -44,25 +44,25 @@ jobs:
       - name: Install Android SDK 37 and Build Tools
         run: sdkmanager --channel=3 "platforms;android-37.0" "build-tools;37.0.0"
 
-      # Debug APKs are signed automatically with Android's debug key.
-      # No release keystore, passwords, release tag, or GitHub Release is required.
-      - name: Build ARM64 debug APK
-        run: ./gradlew --no-daemon --stacktrace assembleDebug
+      # Uses release R8/resource-shrinking rules, but signs with the debug key.
+      # No private signing secrets, release tag, or GitHub Release is required.
+      - name: Build size-optimized ARM64 APK
+        run: ./gradlew --no-daemon --stacktrace assembleOptimized
 
       - name: Prepare SUMITX APK artifact
         shell: bash
         run: |
           set -euo pipefail
-          APK="$(find app/build/outputs/apk/debug -maxdepth 1 -type f -name '*.apk' -print -quit)"
+          APK="$(find app/build/outputs/apk/optimized -type f -name '*.apk' -print -quit)"
           test -n "$APK"
           mkdir -p dist
-          cp "$APK" dist/SUMITX-debug.apk
-          ls -lh dist/SUMITX-debug.apk
+          cp "$APK" dist/SUMITX-optimized.apk
+          ls -lh dist/SUMITX-optimized.apk
 
       - name: Upload SUMITX APK
         uses: actions/upload-artifact@v4
         with:
-          name: SUMITX-APK
-          path: dist/SUMITX-debug.apk
+          name: SUMITX-APK-Optimized
+          path: dist/SUMITX-optimized.apk
           if-no-files-found: error
           retention-days: 14

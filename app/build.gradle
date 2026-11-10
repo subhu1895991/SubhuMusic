@@ -52,6 +52,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
+        // Installable, size-optimized build for sharing without a private release keystore.
+        // Reuses release R8/resource shrinking and is signed with the local debug certificate.
+        optimized {
+            initWith release
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+        }
+
         debug {
             debuggable true
         }
