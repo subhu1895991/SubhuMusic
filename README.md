@@ -139,19 +139,17 @@ All trademarks and content belong to their respective owners. Users are responsi
 
 <div align="center">
 
-<a href="https://github.com/subhadip2217">
-  <img src="https://github.com/subhadip2217.png" width="120" alt="Subhadip Tantubay" />
+<a href="https://github.com/subhu1895991">
+  <img src="app/src/main/res/drawable-nodpi/sunut_debnath.webp" width="120" alt="Sunut Debnath" />
 </a>
 
-### [Subhadip Tantubay](https://github.com/subhadip2217)
+### [Sunut Debnath](https://github.com/subhu1895991)
 
 **Founder · Developer · Project Maintainer**
 
 The person behind SUMITX — working on its development, Android releases, improvements, and maintenance.
 
-[![GitHub](https://img.shields.io/badge/GitHub-subhadip2217-181717?style=for-the-badge&logo=github)](https://github.com/subhadip2217)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/subhadip.tantubay/?hl=en)
-[![YouTube](https://img.shields.io/badge/YouTube-Visit-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@subhadip.tantubay)
+[![GitHub](https://img.shields.io/badge/GitHub-subhu1895991-181717?style=for-the-badge&logo=github)](https://github.com/subhu1895991)
 
 </div>
 

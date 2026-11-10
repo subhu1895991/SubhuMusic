@@ -3925,9 +3925,9 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                coil.compose.AsyncImage(
-                    model = "https://github.com/subhadip2217.png",
-                    contentDescription = "Subhadip Tantubay",
+                Image(
+                    painter = painterResource(R.drawable.sunut_debnath),
+                    contentDescription = "Sunut Debnath",
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape),
@@ -3935,7 +3935,7 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                 )
                 
                 Text(
-                    text = "Subhadip Tantubay",
+                    text = "Sunut Debnath",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -3948,7 +3948,7 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
-                    text = "Customized and maintained by Subhadip Tantubay",
+                    text = "Customized and maintained by Sunut Debnath",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 6.dp)
@@ -3958,9 +3958,7 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                     modifier = Modifier.padding(top = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    SocialIconButton(icon = R.drawable.ic_github, onClick = { onOpenUrl("https://github.com/subhadip2217") })
-                    SocialIconButton(icon = R.drawable.ic_instagram, onClick = { onOpenUrl("https://www.instagram.com/subhadip.tantubay/?hl=en#") })
-                    SocialIconButton(icon = R.drawable.ic_youtube, onClick = { onOpenUrl("https://www.youtube.com/@subhadip.tantubay") })
+                    SocialIconButton(icon = R.drawable.ic_github, onClick = { onOpenUrl("https://github.com/subhu1895991") })
                 }
             }
         }
@@ -4024,7 +4022,7 @@ private fun AppLogoSection(isLandscape: Boolean) {
             letterSpacing = 0.sp
         )
         Text(
-            text = "© 2025 Subhadip Tantubay",
+            text = "© 2026 Sunut Debnath",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
