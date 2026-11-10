@@ -44,9 +44,9 @@ android {
         compose true
     }
 
-    // Build the standard debug variant for direct APK installation.
-    // It is signed automatically with Android's debug key and does not run R8,
-    // so runtime-loaded classes and feature components are not stripped.
+    // Build an installable debug APK. R8 and resource shrinking are enabled below;
+    // proguard-rules.pro conservatively keeps the app's own classes and feature entry points.
+    // The APK is still signed automatically with Android's debug key.
     buildTypes {
         debug {
             debuggable true
