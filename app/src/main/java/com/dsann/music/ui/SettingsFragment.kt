@@ -3926,8 +3926,8 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = painterResource(R.drawable.sunut_debnath),
-                    contentDescription = "Sunut Debnath",
+                    painter = painterResource(R.drawable.sumit_debnath),
+                    contentDescription = "Sumit Debnath",
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape),
@@ -3935,7 +3935,7 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                 )
                 
                 Text(
-                    text = "Sunut Debnath",
+                    text = "Sumit Debnath",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -3948,7 +3948,7 @@ private fun CreditsCard(onOpenUrl: (String) -> Unit) {
                     modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
-                    text = "Customized and maintained by Sunut Debnath",
+                    text = "Customized and maintained by Sumit Debnath",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 6.dp)
@@ -4022,7 +4022,7 @@ private fun AppLogoSection(isLandscape: Boolean) {
             letterSpacing = 0.sp
         )
         Text(
-            text = "© 2026 Sunut Debnath",
+            text = "© 2026 Sumit Debnath",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
