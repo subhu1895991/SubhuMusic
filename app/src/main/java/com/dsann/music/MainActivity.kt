@@ -810,7 +810,13 @@ class MainActivity : AppCompatActivity() {
                     } catch (retryError: Exception) {
                         Log.e(TAG, "Playback service start postponed because the media cache could not be opened", retryError)
                         false
+                    } catch (retryError: LinkageError) {
+                        Log.e(TAG, "Playback service start postponed because an optional runtime component could not be loaded", retryError)
+                        false
                     }
+                } catch (firstError: LinkageError) {
+                    Log.e(TAG, "Playback service start postponed because an optional runtime component could not be loaded", firstError)
+                    false
                 }
             }
 

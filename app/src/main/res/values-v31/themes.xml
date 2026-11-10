@@ -3,7 +3,7 @@
     <!-- Splash Screen Theme (Dynamic Color for API 31+ Light Mode) -->
     <style name="Theme.SpatialFlow.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@android:color/system_neutral1_10</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/sumitx_logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/sumitx_launcher</item>
         <item name="windowSplashScreenAnimationDuration">800</item>
         <item name="postSplashScreenTheme">@style/Theme.SpatialFlow</item>
     </style>

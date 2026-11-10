@@ -66,6 +66,9 @@ class SpatialFlowApplication : Application(), ImageLoaderFactory {
                 CacheManager.clearOldCache(appContext)
             } catch (error: Exception) {
                 Log.e("SpatialFlowApplication", "Background startup initialization failed", error)
+            } catch (error: LinkageError) {
+                // A missing optional runtime component must not terminate the whole app process.
+                Log.e("SpatialFlowApplication", "Optional startup dependency could not be loaded; continuing without background initialization", error)
             }
         }, "SpatialFlow-StartupInit").start()
 

@@ -2,6 +2,14 @@
 -keep class com.dsann.music.SpatialFlowApplication { *; }
 -keep class com.dsann.music.Hilt_SpatialFlowApplication { *; }
 
+# Conservative keep rule for the app's own classes.
+# The optimized APK still shrinks unused third-party code/resources, but avoids R8
+# changing app entry points and feature classes while startup compatibility is verified.
+-keep class com.dsann.music.** { *; }
+
+# NewPipe may access Rhino runtime classes reflectively while preparing extractors.
+-keep class org.mozilla.javascript.** { *; }
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
