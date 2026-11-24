@@ -123,7 +123,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -341,23 +340,10 @@ fun LibraryScreen(
         }
     }
 
-    val nestedScrollConnection = remember(mainActivity) {
-        object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: androidx.compose.ui.geometry.Offset,
-                available: androidx.compose.ui.geometry.Offset,
-                source: androidx.compose.ui.input.nestedscroll.NestedScrollSource
-            ): androidx.compose.ui.geometry.Offset {
-                if (mainActivity != null) {
-                    if (consumed.y < -10f) {
-                        mainActivity.hideBottomNavWithAnimation()
-                    } else if (consumed.y > 10f) {
-                        mainActivity.showBottomNavWithAnimation()
-                    }
-                }
-                return super.onPostScroll(consumed, available, source)
-            }
-        }
+    // Existing tab helper signatures still accept this connection, but it is no longer
+    // attached to scrolling content because the bottom navigation remains persistent.
+    val nestedScrollConnection = remember {
+        object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {}
     }
 
     Scaffold(
@@ -495,7 +481,7 @@ fun LibraryScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .nestedScroll(nestedScrollConnection)
+                    
             ) {
                 when (activeTab) {
                     "Playlists" -> PlaylistsTabContent(
@@ -1323,7 +1309,7 @@ private fun UnifiedLibraryContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(nestedScrollConnection)
+                
         ) {
             items(unifiedItems) { item ->
                 UnifiedLibraryCard(item)
@@ -1618,7 +1604,7 @@ private fun PlaylistsTabContent(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .nestedScroll(nestedScrollConnection)
+                    
             ) {
                 item(key = "ds-cache-folder", contentType = "special-playlist-folder") {
                     if (showAsList) {
@@ -2248,7 +2234,7 @@ private fun PodcastsTabContent(nestedScrollConnection: androidx.compose.ui.input
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .nestedScroll(nestedScrollConnection)
+                    
             ) {
                 items(onlinePodcasts) { podcast ->
                     OnlinePlaylistCard(podcast, onClick = {
@@ -2305,7 +2291,7 @@ private fun SongsTabContent(nestedScrollConnection: androidx.compose.ui.input.ne
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .nestedScroll(nestedScrollConnection),
+                    ,
                 contentPadding = PaddingValues(bottom = 160.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -2413,7 +2399,7 @@ private fun AlbumsTabContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .nestedScroll(nestedScrollConnection)
+                    
             ) {
                 items(onlineAlbums) { album ->
                     OnlineAlbumCard(album, asList = showAsList, onClick = {
@@ -2574,7 +2560,7 @@ private fun ArtistsTabContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
-                    .nestedScroll(nestedScrollConnection)
+                    
             ) {
                 items(onlineArtists) { artist ->
                     OnlineArtistCard(artist, asList = showAsList, onClick = {
@@ -2871,7 +2857,7 @@ private fun RecapTabContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollConnection),
+            ,
         contentPadding = PaddingValues(bottom = 160.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
