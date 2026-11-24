@@ -114,12 +114,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -1649,32 +1646,13 @@ private fun SettingsMainScreen(navController: androidx.navigation.NavController)
     val scrollState = rememberScrollState()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val context = LocalContext.current
-    val mainActivity = context as? MainActivity
-
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: Offset, available: Offset, source: NestedScrollSource
-            ): Offset {
-                if (!isLandscape && mainActivity != null) {
-                    val delta = consumed.y
-                    if (delta < -30f) mainActivity.hideBottomNavWithAnimation()
-                    else if (delta > 30f) mainActivity.showBottomNavWithAnimation()
-                }
-                return super.onPostScroll(consumed, available, source)
-            }
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
             .statusBarsPadding()
             .then(if (isLandscape) Modifier.padding(start = 88.dp) else Modifier)
-            .nestedScroll(nestedScrollConnection)
-            .verticalScroll(scrollState)
+                        .verticalScroll(scrollState)
             .padding(horizontal = 24.dp)
             .padding(bottom = 120.dp)
     ) {
