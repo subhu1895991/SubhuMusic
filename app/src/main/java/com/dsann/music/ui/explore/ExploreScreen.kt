@@ -95,9 +95,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -362,23 +359,6 @@ fun ExploreScreen(
 
     LaunchedEffect(Unit) { viewModel.loadHomeFeed() }
 
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
-                if (!isLandscape && mainActivity != null) {
-                    if (consumed.y < -10f) mainActivity.hideBottomNavWithAnimation()
-                    else if (consumed.y > 10f) mainActivity.showBottomNavWithAnimation()
-                }
-                return super.onPostScroll(consumed, available, source)
-            }
-        }
-    }
-
-
     val screenPriority = remember {
         mapOf(
             "home" to 0,
@@ -498,7 +478,7 @@ fun ExploreScreen(
                 .then(if (isLandscape) Modifier.padding(start = 88.dp) else Modifier)
         ) {
             // ===== Main Content (Now encapsulates scrolling headers) =====
-            Box(modifier = Modifier.fillMaxSize().nestedScroll(nestedScrollConnection)) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 SharedTransitionLayout {
                     CompositionLocalProvider(LocalSharedTransitionScope provides this) {
                         // Keep full-page transitions responsive; the previous default motion
@@ -1004,7 +984,7 @@ fun ExploreScreen(
                                                                     )
                                                                 ) {
 
-                                                                    item {
+                                                                    item(key = "home-welcome-banner", contentType = "welcome-banner") {
                                                                         Box(
                                                                             modifier = Modifier.fillMaxWidth(),
                                                                             contentAlignment = Alignment.Center
@@ -1022,7 +1002,8 @@ fun ExploreScreen(
                                                                     }
                                                                     items(
                                                                         items = homeSections,
-                                                                        key = { section -> "section-${section.title}" }
+                                                                        key = { section -> "section-${section.title}" },
+                                                                        contentType = { "home-section" }
                                                                     ) { section ->
                                                                         HomeSectionRow(
                                                                             section = section,
@@ -1081,7 +1062,7 @@ fun ExploreScreen(
                                                                             }
                                                                         )
                                                                     }
-                                                                    item {
+                                                                    item(key = "home-loading-footer", contentType = "loading-footer") {
                                                                         val isLoadingMore by viewModel.isLoadingMoreHome.collectAsStateWithLifecycle()
                                                                         if (isLoadingMore) {
                                                                             Box(
@@ -1098,7 +1079,8 @@ fun ExploreScreen(
                                                                         }
                                                                     }
                                                                 }
-                                                                LaunchedEffect(homeListState) {
+                                                                // Restart when the feed grows so the paging threshold never captures an old size.
+                                                                LaunchedEffect(homeListState, homeSections.size) {
                                                                     snapshotFlow { homeListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
                                                                         .collect { lastVisibleIndex ->
                                                                             if (lastVisibleIndex != null && lastVisibleIndex >= homeSections.size) {
